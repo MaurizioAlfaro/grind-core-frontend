@@ -1,0 +1,32 @@
+import type { Item } from '../../../types';
+import { ItemRarity, ItemType, EquipmentSlot, ItemCategory } from '../../../types';
+
+export const ancientMoonTempleItems: { [key: string]: Item } = {
+  'moon_temple_energy_lance': { id: 'moon_temple_energy_lance', name: 'Energy Lance', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 1500, description: 'An ancient weapon of a forgotten civilization.', icon: '🔱', forgeAttributes: { '5': 'power_t6', '10': 'xp_t3', '15': 'perm_perk_weapon' } },
+  'moon_temple_ceremonial_robes': { id: 'moon_temple_ceremonial_robes', name: 'Ceremonial Robes', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 1400, description: 'Woven from moonlight and secrets.', icon: '👘', forgeAttributes: { '5': 'power_t6', '10': 'gold_t3', '15': 'perm_perk_armor' } },
+  'moon_temple_lunar_relic': { id: 'moon_temple_lunar_relic', name: 'Lunar Relic', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Amulet, power: 1200, description: 'It pulses with the rhythm of the tides.', icon: '🌙', forgeAttributes: { '5': 'gold_t3', '10': 'xp_t3', '15': 'perm_perk_amulet' } },
+  'moon_temple_dusty_tome': { id: 'moon_temple_dusty_tome', name: 'Dusty Tome', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 1100,
+    description: 'Written in a language you can\'t read, but the diagrams are... illuminating.',
+    icon: ' T ',
+    image: 'images/attributes/misc/dustyTome.jpeg',
+    imageGenPrompt: 'An ancient, leather-bound book covered in moon dust.',
+    forgeAttributes: { '5': 'gold_t1', '10': 'loot_t1', '15': 'perm_perk_misc' } },
+  'moon_temple_star_chart': { id: 'moon_temple_star_chart', name: 'Star Chart', rarity: ItemRarity.Rare, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Amulet, power: 1150,
+    description: 'A map of constellations that no longer exist.',
+    icon: ' S ',
+    image: 'images/attributes/amulet/starChart.jpeg',
+    imageGenPrompt: 'A piece of ancient parchment showing unknown constellations.',
+    forgeAttributes: { '5': 'gold_t1', '10': 'xp_t1', '15': 'perm_perk_amulet' } },
+  'moon_temple_alien_artifact': { id: 'moon_temple_alien_artifact', name: 'Alien Artifact', rarity: ItemRarity.Epic, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Ring, power: 1300,
+    description: 'A smooth, humming stone that fits perfectly in your hand.',
+    icon: ' A ',
+    image: 'images/attributes/ring/alienArtifact.jpeg',
+    imageGenPrompt: 'A smooth, dark, otherworldly stone worn as a ring.',
+    forgeAttributes: { '5': 'power_t6', '10': 'loot_t2', '15': 'perm_perk_ring' } },
+  'moon_temple_gravity_orb': { id: 'moon_temple_gravity_orb', name: 'Gravity Orb', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 1350,
+    description: 'Locally distorts gravity. Try not to drop it.',
+    icon: ' G ',
+    image: 'images/attributes/misc/gravityOrb.jpeg',
+    imageGenPrompt: 'A small, black sphere that visibly bends light around it.',
+    forgeAttributes: { '5': 'gold_t3', '10': 'loot_t3', '15': 'perm_perk_misc' } },
+};

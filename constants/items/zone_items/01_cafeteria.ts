@@ -1,0 +1,36 @@
+
+import type { Item } from '../../../types';
+import { ItemRarity, ItemType, EquipmentSlot, ItemCategory } from '../../../types';
+
+export const cafeteriaItems: { [key: string]: Item } = {
+  'cafeteria_spork': { id: 'cafeteria_spork', name: 'Stirbicks Mug', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 4,
+    description: 'You bought a Stirbicks coffee and you were the client number 66, so you won this ugly coffee mug',
+    icon: '☕',
+    image: 'images/attributes/weapon/stirbicksCoffeeMug.jpeg',
+    imageGenPrompt: 'A coffee mug with a fat triton as a logo',
+    forgeAttributes: { '5': 'power_t1', '10': 'xp_t1', '15': 'perm_perk_weapon' } },
+  'cafeteria_apron': { id: 'cafeteria_apron', name: 'Greasy Apron', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 5,
+    description: 'Stained with the mysteries of today\'s "special". Provides minor protection and a major scent.',
+    icon: '🎽',
+    image: 'images/attributes/armor/greasyApron.jpeg',
+    imageGenPrompt: 'A dirty, stained white cook\'s apron with mysterious stains.',
+    forgeAttributes: { '5': 'power_t1', '10': 'gold_t1', '15': 'perm_perk_armor' } },
+  'cafeteria_onion_ring': { id: 'cafeteria_onion_ring', name: '"Onion" Ring', rarity: ItemRarity.Rare, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Ring, power: 3,
+    description: 'It looks like an onion ring and tastes like an onion ring, but your gut tells you it is not an onion ring.',
+    icon: '💍',
+    image: 'images/attributes/ring/onionRing.jpeg',
+    imageGenPrompt: 'A greasy, perfectly circular onion ring worn on a finger like a piece of jewelry.',
+    forgeAttributes: { '5': 'power_t1', '10': 'loot_t1', '15': 'perm_perk_ring' } },
+  'cafeteria_hairnet': { id: 'cafeteria_hairnet', name: 'Hairnet', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 1,
+    description: 'Keeps your thoughts from falling into the soup.',
+    icon: ' H ',
+    image: 'images/attributes/misc/hairnet.jpeg',
+    imageGenPrompt: 'A flimsy, disposable hairnet worn like a helmet.',
+    forgeAttributes: { '5': 'gold_t1', '10': 'loot_t1', '15': 'perm_perk_misc' } },
+  'cafeteria_jello_amulet': { id: 'cafeteria_jello_amulet', name: 'Jello Amulet', rarity: ItemRarity.Epic, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Amulet, power: 7,
+    description: 'A quivering cube of gelatin that unnervingly absorbs ambient psychic energy.',
+    icon: ' J ',
+    image: 'images/attributes/amulet/jelloAmulet.jpeg',
+    imageGenPrompt: 'A cube of red gelatin with a cherry inside, suspended from a chain like an amulet.',
+    forgeAttributes: { '5': 'gold_t2', '10': 'xp_t2', '15': 'perm_perk_amulet' } },
+};

@@ -1,0 +1,32 @@
+import type { Item } from '../../../types';
+import { ItemRarity, ItemType, EquipmentSlot, ItemCategory } from '../../../types';
+
+export const darkThroneItems: { [key: string]: Item } = {
+  'dark_throne_executioner_axe': { id: 'dark_throne_executioner_axe', name: 'Executioner\'s Axe', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 6000, description: 'Has ended many reigns.', icon: '🪓', forgeAttributes: { '5': 'power_t8', '10': 'xp_t3', '15': 'perm_perk_weapon' } },
+  'dark_throne_obsidian_armor': { id: 'dark_throne_obsidian_armor', name: 'Obsidian Armor', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 5800, description: 'Forged in the heart of a volcano.', icon: '🌋', forgeAttributes: { '5': 'power_t8', '10': 'gold_t3', '15': 'perm_perk_armor' } },
+  'dark_throne_crown_of_tyranny': { id: 'dark_throne_crown_of_tyranny', name: 'Crown of Tyranny', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 5500, description: 'Heavy is the head that wears the crown.', icon: '👑', forgeAttributes: { '5': 'gold_t3', '10': 'loot_t3', '15': 'perm_perk_misc' } },
+  'dark_throne_shackle_whip': { id: 'dark_throne_shackle_whip', name: 'Shackle Whip', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 5400,
+    description: 'A whip made from the chains of the oppressed.',
+    icon: ' S ',
+    image: 'images/attributes/weapon/shackleWhip.jpeg',
+    imageGenPrompt: 'A long whip made from heavy, broken iron chains.',
+    forgeAttributes: { '5': 'power_t8', '10': 'xp_t1', '15': 'perm_perk_weapon' } },
+  'dark_throne_tattered_banner': { id: 'dark_throne_tattered_banner', name: 'Tattered Banner', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 5300,
+    description: 'The faded symbol of a forgotten kingdom.',
+    icon: ' B ',
+    image: 'images/attributes/armor/tatteredBanner.jpeg',
+    imageGenPrompt: 'A torn and faded royal banner, worn as a cloak.',
+    forgeAttributes: { '5': 'power_t8', '10': 'gold_t1', '15': 'perm_perk_armor' } },
+  'dark_throne_goblet_of_shadows': { id: 'dark_throne_goblet_of_shadows', name: 'Goblet of Shadows', rarity: ItemRarity.Rare, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Ring, power: 5450,
+    description: 'Drinks light and casts long shadows.',
+    icon: '🍷',
+    image: 'images/attributes/ring/gobletOfShadows.jpeg',
+    imageGenPrompt: 'An ornate, dark metal goblet that seems to absorb light.',
+    forgeAttributes: { '5': 'power_t8', '10': 'loot_t1', '15': 'perm_perk_ring' } },
+  'dark_throne_whispering_skull': { id: 'dark_throne_whispering_skull', name: 'Whispering Skull', rarity: ItemRarity.Epic, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 5600,
+    description: 'It tells you terrible, terrible jokes.',
+    icon: '💀',
+    image: 'images/attributes/misc/whisperingSkull.jpeg',
+    imageGenPrompt: 'A humanoid skull with glowing runes carved into it.',
+    forgeAttributes: { '5': 'gold_t2', '10': 'loot_t2', '15': 'perm_perk_misc' } },
+};

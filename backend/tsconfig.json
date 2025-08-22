@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "forceConsistentCasingInFileNames": false,
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "noEmitOnError": false,
+    "noEmit": false,
+    "noImplicitOverride": false,
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": true,
+    "ignoreDeprecations": "5.0",
+    "baseUrl": "../",
+    "paths": {
+      "*": ["*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

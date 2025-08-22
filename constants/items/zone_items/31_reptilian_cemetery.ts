@@ -1,0 +1,30 @@
+import type { Item } from '../../../types';
+import { ItemRarity, ItemType, EquipmentSlot, ItemCategory } from '../../../types';
+
+export const reptilianCemeteryItems: { [key: string]: Item } = {
+  'cemetery_femur': { id: 'cemetery_femur', name: 'Elder Reptilian Femur', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 110000, description: 'The thigh bone of a legendary ancestor. It still resonates with their power and fury.', icon: '🦴', image: 'images/attributes/weapon/reptilianFemur.jpeg', imageGenPrompt: 'A massive, ancient, reptilian thigh bone used as a giant club.', forgeAttributes: { '5': 'power_t9', '10': 'xp_t3', '15': 'perm_perk_weapon' } },
+  'cemetery_grave_dirt': { id: 'cemetery_grave_dirt', name: 'Grave Dirt', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 80000,
+    description: 'A handful of sacred soil. It smells of eternity.',
+    icon: ' D ',
+    image: 'images/attributes/misc/graveDirt.jpeg',
+    imageGenPrompt: 'A handful of dark, rich soil with faint wisps of spirit energy.',
+    forgeAttributes: { '5': 'gold_t1', '10': 'loot_t1', '15': 'perm_perk_misc' } },
+  'cemetery_tombstone_fragment': { id: 'cemetery_tombstone_fragment', name: 'Tombstone Fragment', rarity: ItemRarity.Rare, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 90000,
+    description: 'A piece of a tombstone with a single, unreadable rune.',
+    icon: ' T ',
+    image: 'images/attributes/weapon/tombstoneFragment.jpeg',
+    imageGenPrompt: 'A sharp fragment of a granite tombstone, used as a weapon.',
+    forgeAttributes: { '5': 'power_t9', '10': 'xp_t1', '15': 'perm_perk_weapon' } },
+  'cemetery_ancestral_dust': { id: 'cemetery_ancestral_dust', name: 'Ancestral Dust', rarity: ItemRarity.Epic, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Ring, power: 100000,
+    description: 'The crystallized dust of ancient reptilian kings.',
+    icon: ' A ',
+    image: 'images/attributes/ring/ancestralDust.jpeg',
+    imageGenPrompt: 'A ring containing swirling, glowing dust.',
+    forgeAttributes: { '5': 'power_t9', '10': 'loot_t2', '15': 'perm_perk_ring' } },
+  'cemetery_spirit_ward': { id: 'cemetery_spirit_ward', name: 'Spirit Ward', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 105000,
+    description: 'A charm that protects the wearer from angry ghosts.',
+    icon: ' S ',
+    image: 'images/attributes/misc/spiritWard.jpeg',
+    imageGenPrompt: 'A glowing amulet that emits a protective, spiritual barrier.',
+    forgeAttributes: { '5': 'gold_t3', '10': 'loot_t3', '15': 'perm_perk_misc' } },
+};

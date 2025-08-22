@@ -1,0 +1,32 @@
+import type { Item } from '../../../types';
+import { ItemRarity, ItemType, EquipmentSlot, ItemCategory } from '../../../types';
+
+export const belowThePyramidItems: { [key: string]: Item } = {
+  'pyramid_khopesh': { id: 'pyramid_khopesh', name: 'Pharaoh\'s Khopesh', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 4000, description: 'Cursed to reap the souls of the unworthy.', icon: '🗡️', forgeAttributes: { '5': 'power_t7', '10': 'xp_t3', '15': 'perm_perk_weapon' } },
+  'pyramid_sarcophagus_plating': { id: 'pyramid_sarcophagus_plating', name: 'Sarcophagus Plating', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 3800, description: 'Fit for a king... or a very powerful agent.', icon: '⚰️', forgeAttributes: { '5': 'power_t7', '10': 'gold_t3', '15': 'perm_perk_armor' } },
+  'pyramid_eye_of_ra': { id: 'pyramid_eye_of_ra', name: 'Eye of Ra Amulet', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Amulet, power: 3500, description: 'Sees all, burns all.', icon: '👁️', forgeAttributes: { '5': 'gold_t3', '10': 'xp_t3', '15': 'perm_perk_amulet' } },
+  'pyramid_torch': { id: 'pyramid_torch', name: 'Torch', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 3400,
+    description: 'Lights the way and sets things on fire.',
+    icon: '🔥',
+    image: 'images/attributes/weapon/torch.jpeg',
+    imageGenPrompt: 'A simple wooden torch with a burning flame.',
+    forgeAttributes: { '5': 'power_t7', '10': 'xp_t1', '15': 'perm_perk_weapon' } },
+  'pyramid_mummy_wrappings': { id: 'pyramid_mummy_wrappings', name: 'Mummy Wrappings', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 3300,
+    description: 'Smells of dust and curses.',
+    icon: ' W ',
+    image: 'images/attributes/armor/mummyWrappings.jpeg',
+    imageGenPrompt: 'Old, tattered linen wrappings from a mummy.',
+    forgeAttributes: { '5': 'power_t7', '10': 'gold_t1', '15': 'perm_perk_armor' } },
+  'pyramid_scarab_brooch': { id: 'pyramid_scarab_brooch', name: 'Scarab Brooch', rarity: ItemRarity.Rare, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Ring, power: 3450,
+    description: 'A symbol of rebirth and resilience.',
+    icon: '🐞',
+    image: 'images/attributes/ring/scarabBrooch.jpeg',
+    imageGenPrompt: 'An ornate golden brooch shaped like a scarab beetle.',
+    forgeAttributes: { '5': 'power_t7', '10': 'loot_t1', '15': 'perm_perk_ring' } },
+  'pyramid_canopic_jar': { id: 'pyramid_canopic_jar', name: 'Canopic Jar', rarity: ItemRarity.Epic, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 3600,
+    description: 'It\'s best not to ask what\'s inside.',
+    icon: '🏺',
+    image: 'images/attributes/misc/canopicJar.jpeg',
+    imageGenPrompt: 'An ancient Egyptian canopic jar with the head of a jackal.',
+    forgeAttributes: { '5': 'gold_t2', '10': 'loot_t2', '15': 'perm_perk_misc' } },
+};

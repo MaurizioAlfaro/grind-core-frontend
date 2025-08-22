@@ -1,0 +1,21 @@
+import type { Item } from '../../../types';
+import { ItemRarity, ItemType, EquipmentSlot, ItemCategory } from '../../../types';
+
+export const afterTheWarItems: { [key: string]: Item } = {
+  'after_war_scrapsword': { id: 'after_war_scrapsword', name: 'Scrapsword', rarity: ItemRarity.Rare, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 400, description: 'Made from the ruins of the old world.', icon: '🗡️', forgeAttributes: { '5': 'power_t5', '10': 'xp_t1', '15': 'perm_perk_weapon' } },
+  'after_war_roadsign_shield': { id: 'after_war_roadsign_shield', name: 'Roadsign Shield', rarity: ItemRarity.Rare, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 380, description: 'It says "STOP". Most enemies don\'t listen.', icon: '🛑', forgeAttributes: { '5': 'power_t5', '10': 'gold_t1', '15': 'perm_perk_armor' } },
+  'after_war_mutant_rat_skull': { id: 'after_war_mutant_rat_skull', name: 'Mutant Rat Skull', rarity: ItemRarity.Epic, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Misc, power: 350, description: 'It had three eyes.', icon: '💀', forgeAttributes: { '5': 'gold_t2', '10': 'loot_t2', '15': 'perm_perk_misc' } },
+  'after_war_dog_tags': { id: 'after_war_dog_tags', name: 'Dog Tags', rarity: ItemRarity.Legendary, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Amulet, power: 365, description: 'Belonged to a forgotten soldier.', icon: '🏷️', forgeAttributes: { '5': 'gold_t3', '10': 'xp_t3', '15': 'perm_perk_amulet' } },
+  'after_war_gas_mask': { id: 'after_war_gas_mask', name: 'Gas Mask', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Armor, power: 360,
+    description: 'Protects against fallout and bad smells.',
+    icon: ' G ',
+    image: 'images/attributes/armor/gasMask.jpeg',
+    imageGenPrompt: 'A gritty, weathered gas mask.',
+    forgeAttributes: { '5': 'power_t5', '10': 'gold_t1', '15': 'perm_perk_armor' } },
+  'after_war_barbed_wire': { id: 'after_war_barbed_wire', name: 'Barbed Wire', rarity: ItemRarity.Common, type: ItemType.Equipable, category: ItemCategory.Standard, slot: EquipmentSlot.Weapon, power: 370,
+    description: 'A length of rusty barbed wire wrapped around a pipe.',
+    icon: ' B ',
+    image: 'images/attributes/weapon/barbedWire.jpeg',
+    imageGenPrompt: 'A crude club made from a pipe wrapped in rusty barbed wire.',
+    forgeAttributes: { '5': 'power_t5', '10': 'xp_t1', '15': 'perm_perk_weapon' } },
+};
