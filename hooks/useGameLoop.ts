@@ -162,12 +162,30 @@ export const useGameLoop = () => {
 
   const handleApiResponse = useCallback(
     (result: any) => {
+      console.log("🔍 [Frontend] handleApiResponse called with:", result);
+
       if (result.success) {
         if (result.newPlayerState) {
-          setGameState((prevState) => ({
-            ...prevState!,
-            player: result.newPlayerState,
-          }));
+          console.log(
+            "🔍 [Frontend] Updating player state with:",
+            result.newPlayerState
+          );
+          setGameState((prevState) => {
+            if (!prevState) return prevState;
+            console.log(
+              "🔍 [Frontend] handleApiResponse: prevState.player before update:",
+              prevState.player
+            );
+            const newState = {
+              ...prevState!,
+              player: result.newPlayerState,
+            };
+            console.log(
+              "🔍 [Frontend] handleApiResponse: newState.player after update:",
+              newState.player
+            );
+            return newState;
+          });
         }
         if (
           result.newlyUnlockedBadges &&
@@ -847,17 +865,52 @@ export const useGameLoop = () => {
       if (!gameState || !gameState.activeMission) return;
       const { tutorialStep, tutorialCompleted } = gameState.player;
 
+      console.log(
+        "🔍 [Frontend] claimMission called with activeMission:",
+        gameState.activeMission
+      );
+      console.log(
+        "🔍 [Frontend] Current player state before API call:",
+        gameState.player
+      );
+
       const result = await apiService.claimMission({
         activeMission: gameState.activeMission,
       });
 
+      console.log("🔍 [Frontend] API response received:", result);
+
       if (handleApiResponse(result)) {
+        console.log(
+          "🔍 [Frontend] handleApiResponse succeeded, updating mission state"
+        );
         setTimeLeft(0);
-        setGameState((prevState) => ({ ...prevState!, activeMission: null }));
+        // Update only the activeMission part, preserving the player state update from handleApiResponse
+        setGameState((prevState) => {
+          if (!prevState) return prevState;
+          console.log(
+            "🔍 [Frontend] Updating game state, prevState.player:",
+            prevState.player
+          );
+          console.log(
+            "🔍 [Frontend] Using result.newPlayerState:",
+            result.newPlayerState
+          );
+          const newState = {
+            ...prevState,
+            activeMission: null,
+            // Keep the player state that was updated by handleApiResponse
+            player: result.newPlayerState || prevState.player,
+          };
+          console.log("🔍 [Frontend] Final newState after update:", newState);
+          return newState;
+        });
         if (!tutorialCompleted) {
           if (tutorialStep === 9 || tutorialStep === 19) safeAdvanceTutorial();
           if (tutorialStep === 38) safeAdvanceTutorial();
         }
+      } else {
+        console.log("🔍 [Frontend] handleApiResponse failed");
       }
     }, [gameState, handleApiResponse, safeAdvanceTutorial]),
     // Other actions
@@ -872,7 +925,16 @@ export const useGameLoop = () => {
       const result = await apiService.cancelMission({});
 
       if (handleApiResponse(result)) {
-        setGameState((p) => ({ ...p!, activeMission: null }));
+        // Update only the activeMission part, preserving the player state update from handleApiResponse
+        setGameState((prevState) => {
+          if (!prevState) return prevState;
+          return {
+            ...prevState,
+            activeMission: null,
+            // Keep the player state that was updated by handleApiResponse
+            player: result.newPlayerState || prevState.player,
+          };
+        });
       }
       setIsCancelConfirmModalOpen(false);
     }, [gameState, handleApiResponse]),

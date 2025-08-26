@@ -16,6 +16,19 @@ export const startMission = (
   durationKey: MissionDurationKey,
   isDevMode: boolean
 ): { success: boolean; message: string; activeMission?: ActiveMission } => {
+  console.log(
+    "🔍 [startMission] Input playerState.activeBoosts:",
+    JSON.stringify(playerState.activeBoosts, null, 2)
+  );
+  console.log(
+    "🔍 [startMission] Input playerState.activeBoosts type:",
+    typeof playerState.activeBoosts
+  );
+  console.log(
+    "🔍 [startMission] Input playerState.activeBoosts isArray:",
+    Array.isArray(playerState.activeBoosts)
+  );
+
   const zone = ZONES.find((z) => z.id === zoneId);
   if (!zone) {
     return { success: false, message: "Zone not found." };
@@ -43,6 +56,11 @@ export const startMission = (
   playerState.activeBoosts.forEach((b) => {
     if (b.type === "speed") speedMultiplier *= b.value;
   });
+
+  console.log(
+    "🔍 [startMission] Calculated speedMultiplier from activeBoosts:",
+    speedMultiplier
+  );
 
   // Apply mission speed from enchantments
   if (playerState.equipmentEnchantments) {

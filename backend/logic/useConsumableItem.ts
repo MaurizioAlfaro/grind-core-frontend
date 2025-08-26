@@ -10,6 +10,19 @@ export const useConsumableItem = (
   playerState: PlayerState,
   itemId: string
 ): EngineResult<{}> => {
+  console.log(
+    "🔍 [useConsumableItem] Input playerState.activeBoosts:",
+    JSON.stringify(playerState.activeBoosts, null, 2)
+  );
+  console.log(
+    "🔍 [useConsumableItem] Input playerState.activeBoosts type:",
+    typeof playerState.activeBoosts
+  );
+  console.log(
+    "🔍 [useConsumableItem] Input playerState.activeBoosts isArray:",
+    Array.isArray(playerState.activeBoosts)
+  );
+
   let newPlayerState = { ...playerState };
 
   const itemData = ITEMS[itemId] as ConsumableItem;
@@ -44,7 +57,16 @@ export const useConsumableItem = (
         itemData.buffEffect.durationSeconds * 1000,
       sourceId: itemId, // Use item ID as the source
     };
+
+    console.log(
+      "🔍 [useConsumableItem] Created newBoost:",
+      JSON.stringify(newBoost, null, 2)
+    );
     newPlayerState.activeBoosts = [...newPlayerState.activeBoosts, newBoost];
+    console.log(
+      "🔍 [useConsumableItem] After adding newBoost, activeBoosts:",
+      JSON.stringify(newPlayerState.activeBoosts, null, 2)
+    );
   }
 
   // Consume item
