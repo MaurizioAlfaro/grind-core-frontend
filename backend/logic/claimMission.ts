@@ -49,7 +49,7 @@ export const claimMission = (
     console.log("🔍 [claimMission] Granting initial speed boost!");
     newPlayerState.hasReceivedInitialBoost = true;
     const speedBoost: ActiveBoost = {
-      type: "speed",
+      boostType: "speed",
       value: 1 / 15, // 15x speed
       endTime: now + 10 * 60 * 1000, // 10 minutes
       sourceId: "initial_boost",

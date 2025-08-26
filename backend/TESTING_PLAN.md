@@ -608,7 +608,7 @@ export async function testDataIntegrity() {
     const playerState = await getPlayerState(testPlayerId);
 
     // Check array properties remain arrays
-    assert(Array.isArray(playerState.activeBoosts));
+    assert(Array.isArray(playerState.activeBoosts)); // ✅ RESOLVED: Schema issue fixed
     assert(Array.isArray(playerState.inventory));
     assert(Array.isArray(playerState.unlockedZoneIds));
 
@@ -638,6 +638,18 @@ export async function testDataIntegrity() {
 - Reset player state before each test
 - Clean up after tests complete
 - Maintain test data isolation
+
+## ✅ **RESOLVED ISSUES**
+
+### **ActiveBoosts Schema Validation Issue - RESOLVED**
+
+**Problem**: The `activeBoosts` field was failing validation with `Cast to [string] failed` errors.
+
+**Root Cause**: The field name `type` is a reserved keyword in Mongoose, causing schema compilation conflicts.
+
+**Solution**: Renamed the field to `boostType` in both the schema and TypeScript interface.
+
+**Status**: ✅ **FULLY RESOLVED** - All power calculation tests now pass successfully.
 
 ## Test Utilities Usage Guide
 

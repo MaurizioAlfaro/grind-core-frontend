@@ -253,7 +253,7 @@ export type BoostType = "xp" | "gold" | "loot" | "speed" | "power";
 export type PermanentUpgradeType = "xp" | "gold" | "loot";
 
 export interface ActiveBoost {
-  type: BoostType;
+  boostType: BoostType;
   // For xp, gold, loot, speed this is a multiplier (e.g., 1.1 for +10%)
   // For power, this is an additive value.
   value: number;

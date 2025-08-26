@@ -54,7 +54,7 @@ export const startMission = (
   // Apply speed buffs
   let speedMultiplier = 1;
   playerState.activeBoosts.forEach((b) => {
-    if (b.type === "speed") speedMultiplier *= b.value;
+    if (b.boostType === "speed") speedMultiplier *= b.value;
   });
 
   console.log(

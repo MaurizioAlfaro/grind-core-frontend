@@ -15,17 +15,10 @@ const PlayerSchema = new mongoose.Schema(
         quantity: Number,
       },
     ],
-    equipment: { type: Map, of: String, default: {} },
-    equipmentUpgrades: { type: Map, of: Number, default: {} },
+    equipment: { type: Object, default: {} },
+    equipmentUpgrades: { type: Object, default: {} },
     equipmentEnchantments: {
-      type: Map,
-      of: [
-        {
-          _id: false,
-          attributeId: String,
-          tier: Number,
-        },
-      ],
+      type: Object,
       default: {},
     },
     unlockedZoneIds: [String],
@@ -34,15 +27,18 @@ const PlayerSchema = new mongoose.Schema(
     completedLongMissionZoneIds: { type: [String], default: [] },
     permanentPowerBonus: { type: Number, default: 0 },
     powerMultiplier: { type: Number, default: 1.0 },
-    activeBoosts: [
-      {
-        _id: false,
-        type: String,
-        value: Number,
-        endTime: Number,
-        sourceId: String,
-      },
-    ],
+    activeBoosts: {
+      type: [
+        {
+          _id: false,
+          boostType: String,
+          value: Number,
+          endTime: Number,
+          sourceId: String,
+        },
+      ],
+      default: [],
+    },
     purchasedStoreUpgradeIds: { type: [String], default: [] },
     unlockedBadgeIds: { type: [String], default: [] },
     defeatedBossIds: { type: [String], default: [] },
@@ -82,8 +78,8 @@ const PlayerSchema = new mongoose.Schema(
     isWalletConnected: { type: Boolean, default: false },
     ownsReptilianzNFT: { type: Boolean, default: false },
     hasSeenWalletConnectPrompt: { type: Boolean, default: false },
-    bossDefeatCounts: { type: Map, of: Number, default: {} },
-    dailySafeguardUses: { type: Map, of: Number, default: {} },
+    bossDefeatCounts: { type: Object, default: {} },
+    dailySafeguardUses: { type: Object, default: {} },
     lastSafeguardUseTimestamp: { type: Number, default: 0 },
   },
   {

@@ -125,9 +125,9 @@ export const preRollRewards = (
   // Active Buffs
   playerState.activeBoosts.forEach((buff) => {
     // NOTE: The value for buffs is the final multiplier (e.g., 1.25 for +25%)
-    if (buff.type === "xp") xpMultiplier *= buff.value;
-    if (buff.type === "gold") goldMultiplier *= buff.value;
-    if (buff.type === "loot") lootMultiplier *= buff.value;
+    if (buff.boostType === "xp") xpMultiplier *= buff.value;
+    if (buff.boostType === "gold") goldMultiplier *= buff.value;
+    if (buff.boostType === "loot") lootMultiplier *= buff.value;
   });
 
   console.log(

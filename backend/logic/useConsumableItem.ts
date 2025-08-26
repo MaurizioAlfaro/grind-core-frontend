@@ -50,7 +50,7 @@ export const useConsumableItem = (
     }
 
     const newBoost: ActiveBoost = {
-      type: itemData.buffEffect.type,
+      boostType: itemData.buffEffect.type,
       value: itemData.buffEffect.value,
       endTime:
         clockService.getCurrentTime() +

@@ -25,19 +25,6 @@ export const calculatePlayerPower = (
     bossId?: string;
   } = {}
 ): number => {
-  console.log(
-    "🔍 [calculatePlayerPower] Input playerState.activeBoosts:",
-    JSON.stringify(playerState.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [calculatePlayerPower] Input playerState.activeBoosts type:",
-    typeof playerState.activeBoosts
-  );
-  console.log(
-    "🔍 [calculatePlayerPower] Input playerState.activeBoosts isArray:",
-    Array.isArray(playerState.activeBoosts)
-  );
-
   let basePowerFromEquipment = 0;
   const activeEquipAttributes: ForgeAttribute[] = [];
 
@@ -118,12 +105,8 @@ export const calculatePlayerPower = (
 
   // 4. Calculate other flat power sources
   const temporaryPower = playerState.activeBoosts
-    .filter((b) => b.type === "power")
+    .filter((b) => b.boostType === "power")
     .reduce((sum, b) => sum + b.value, 0);
-  console.log(
-    "🔍 [calculatePlayerPower] Calculated temporaryPower from activeBoosts:",
-    temporaryPower
-  );
 
   let powerFromHomunculi = 0;
   if (playerState.homunculi) {
@@ -200,19 +183,6 @@ export const calculatePlayerPower = (
     totalPower *= bossPowerMultiplier;
     totalPower *= nemesisPowerMultiplier;
   }
-
-  console.log(
-    "🔍 [calculatePlayerPower] Final playerState.activeBoosts unchanged:",
-    JSON.stringify(playerState.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [calculatePlayerPower] Final playerState.activeBoosts type:",
-    typeof playerState.activeBoosts
-  );
-  console.log(
-    "🔍 [calculatePlayerPower] Final playerState.activeBoosts isArray:",
-    Array.isArray(playerState.activeBoosts)
-  );
 
   // Check if activeBoosts got corrupted
   if (typeof playerState.activeBoosts === "string") {
