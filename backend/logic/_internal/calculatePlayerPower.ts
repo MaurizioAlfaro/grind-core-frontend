@@ -48,7 +48,7 @@ export const calculatePlayerPower = (
     if (itemId) {
       const item = ITEMS[itemId] as EquipableItem;
       if (item?.type === ItemType.Equipable) {
-        const upgradeLevel = playerState.equipmentUpgrades[key] || 0;
+        const upgradeLevel = playerState.equipmentUpgrades[itemId] || 0;
         const baseItemPower = item.power;
         const bonusFromUpgrades =
           baseItemPower * upgradeLevel * FORGE_CONFIG.powerBonusPerLevel;

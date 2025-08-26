@@ -16,15 +16,18 @@ import { clockService } from "../../services/clockService";
 
 export const upgradeItem = (
   playerState: PlayerState,
-  slot: EquipmentSlot,
+  itemId: string,
   isSafe: boolean
 ): EngineResult<{ outcome?: "success" | "stay" | "downgrade" }> => {
-  const itemId = playerState.equipment[slot];
-  if (!itemId) {
-    return { success: false, message: "No item equipped in that slot." };
+  // Check if item is equipped
+  const equippedSlot = Object.entries(playerState.equipment).find(
+    ([_, id]) => id === itemId
+  )?.[0] as EquipmentSlot;
+  if (!equippedSlot) {
+    return { success: false, message: "Item is not equipped." };
   }
 
-  const currentLevel = playerState.equipmentUpgrades[slot] || 0;
+  const currentLevel = playerState.equipmentUpgrades[itemId] || 0;
   if (currentLevel >= MAX_UPGRADE_LEVEL) {
     return { success: false, message: "Item is already at max level." };
   }
@@ -44,7 +47,11 @@ export const upgradeItem = (
   }
 
   let newPlayerState = { ...playerState, gold: playerState.gold - cost };
-  const newUpgrades = { ...newPlayerState.equipmentUpgrades };
+  // Ensure equipmentUpgrades is a plain object, not a Map
+  const newUpgrades =
+    newPlayerState.equipmentUpgrades instanceof Map
+      ? Object.fromEntries(newPlayerState.equipmentUpgrades)
+      : { ...newPlayerState.equipmentUpgrades };
   const newlyUnlockedBadges = [];
   let outcome: "success" | "stay" | "downgrade" = "stay";
   let message = "";
@@ -55,7 +62,7 @@ export const upgradeItem = (
     outcome = "success";
     newPlayerState.highChanceForgeFails = 0; // Reset counter on success
     const newLevel = currentLevel + 1;
-    newUpgrades[slot] = newLevel;
+    newUpgrades[itemId] = newLevel;
     message = `Upgrade success! (+${newLevel})`;
 
     // Check for attribute unlock
@@ -114,7 +121,7 @@ export const upgradeItem = (
         : `Upgrade failed! (Level unchanged)`;
     } else {
       outcome = "downgrade";
-      newUpgrades[slot] = Math.max(0, currentLevel - 1);
+      newUpgrades[itemId] = Math.max(0, currentLevel - 1);
       message = `Upgrade failed! Item downgraded. (+${Math.max(
         0,
         currentLevel - 1
