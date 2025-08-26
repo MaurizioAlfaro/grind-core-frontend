@@ -118,7 +118,12 @@ export const startMission = (
     startTime: now,
     endTime,
     durationKey,
-    preRolledRewards: rewards,
+    preRolledRewards: {
+      xp: 0,
+      gold: 0,
+      dollars: 0,
+      items: [],
+    },
   };
 
   return { success: true, message: "Mission started!", activeMission };
