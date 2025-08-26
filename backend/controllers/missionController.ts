@@ -1,257 +1,151 @@
 import asyncHandler from "express-async-handler";
-import {
-  startMission as startMissionLogic,
-  claimMission as claimMissionLogic,
-  cancelMission as cancelMissionLogic,
-} from "../logic";
+import { startMission, cancelMission } from "../logic";
+import { claimMission } from "../logic";
+import { ZONES } from "../../constants/index";
+import { clockService } from "../../services/clockService";
+import { applyRewards } from "../logic/_internal/applyRewards";
+import { calculatePlayerPower } from "../logic/_internal/calculatePlayerPower";
+import { checkForBadgeUnlocks } from "../logic/_internal/checkForBadgeUnlocks";
+import type { ActiveBoost } from "../../types";
 
-// Note: In this simplified model, `activeMission` is stored on the client.
-// A more robust backend would store this in the database as well.
-// For this project, we receive the activeMission from the client to claim it.
+export const startMissionController = asyncHandler(
+  async (req: any, res: any) => {
+    const { zoneId, durationKey, isDevMode } = req.body;
+    const player = req.player.toObject();
 
-export const startMission = asyncHandler(async (req: any, res: any) => {
-  const { zoneId, durationKey, isDevMode } = req.body;
-  const player = req.player.toObject();
+    const result = startMission(player, zoneId, durationKey, isDevMode);
 
-  const result = startMissionLogic(player, zoneId, durationKey, isDevMode);
+    if (result.success && result.activeMission) {
+      req.player.activeMission = result.activeMission;
+      await req.player.save();
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+  }
+);
 
-  if (result.success && result.activeMission) {
-    // Save the active mission to the player document
+export const claimMissionController = asyncHandler(
+  async (req: any, res: any) => {
+    let playerDoc = req.player;
+    const activeMission = playerDoc.activeMission;
+
+    if (!activeMission) {
+      res.status(400).json({ success: false, message: "No active mission." });
+      return;
+    }
+
+    const now = clockService.getCurrentTime();
+    if (now < activeMission.endTime) {
+      res
+        .status(400)
+        .json({ success: false, message: "Mission not yet complete." });
+      return;
+    }
+
+    const rewards = activeMission.preRolledRewards;
+    let newPlayerState = applyRewards(playerDoc.toObject(), rewards);
+
+    // Reset consecutive cancels for "Leeroy Jenkins" badge
+    newPlayerState.consecutiveCancels = 0;
+
+    // Track total missions completed
+    newPlayerState.missionsCompleted =
+      (newPlayerState.missionsCompleted || 0) + 1;
+
+    let isInitialBoost = false;
+    // Grant initial speed boost after 3rd mission
+    if (
+      newPlayerState.missionsCompleted === 3 &&
+      !newPlayerState.hasReceivedInitialBoost
+    ) {
+      newPlayerState.hasReceivedInitialBoost = true;
+      const speedBoost: ActiveBoost = {
+        boostType: "speed",
+        value: 1 / 15, // 15x speed
+        endTime: now + 10 * 60 * 1000, // 10 minutes
+        sourceId: "initial_boost",
+      };
+      newPlayerState.activeBoosts = [
+        ...newPlayerState.activeBoosts,
+        speedBoost,
+      ];
+      isInitialBoost = true;
+    }
+
+    if (
+      activeMission.durationKey === "LONG" &&
+      !newPlayerState.completedLongMissionZoneIds.includes(activeMission.zoneId)
+    ) {
+      const updatedCompletedLongMissions = [
+        ...newPlayerState.completedLongMissionZoneIds,
+      ];
+      updatedCompletedLongMissions.push(activeMission.zoneId);
+      newPlayerState.completedLongMissionZoneIds = updatedCompletedLongMissions;
+    }
+
+    const zone = ZONES.find((z) => z.id === activeMission.zoneId);
+    if (zone && !newPlayerState.completedZoneIds.includes(zone.id)) {
+      const zoneItems = new Set(zone.lootTable.map((l) => l.itemId));
+      if (zone.exclusiveLoot) {
+        zone.exclusiveLoot.forEach((l) => zoneItems.add(l.itemId));
+      }
+
+      const allFound = [...zoneItems].every((itemId) =>
+        newPlayerState.discoveredItemIds.includes(itemId)
+      );
+      if (allFound) {
+        const updatedCompletedZones = [...newPlayerState.completedZoneIds];
+        updatedCompletedZones.push(zone.id);
+        newPlayerState.completedZoneIds = updatedCompletedZones;
+        newPlayerState = zone.completionBonus.apply(newPlayerState);
+      }
+    }
+
+    newPlayerState.power = calculatePlayerPower(newPlayerState);
+    const badgeCheckResult = checkForBadgeUnlocks(newPlayerState);
+
+    const result = {
+      success: true,
+      message: "Stupid Mission complete!",
+      newPlayerState: badgeCheckResult.newPlayerState,
+      rewards,
+      newlyUnlockedBadges: badgeCheckResult.newlyUnlockedBadges,
+      isInitialBoost,
+    };
+
+    const resultDeepCopy = JSON.parse(JSON.stringify(result));
+    console.log("🔍 [missionController.claimMission] Result:", result);
+
+    if (result.success && result.newPlayerState) {
+      Object.assign(playerDoc, {
+        ...result.newPlayerState,
+        activeMission: null,
+      });
+      await playerDoc.save();
+      console.log(
+        "🔍 [missionController.claimMission] Result Afer saving:",
+        resultDeepCopy
+      );
+      res.status(200).json(resultDeepCopy);
+    } else {
+      res.status(400).json(resultDeepCopy);
+    }
+  }
+);
+
+export const cancelMissionController = asyncHandler(
+  async (req: any, res: any) => {
     const playerDoc = req.player;
-    playerDoc.activeMission = result.activeMission;
-    await playerDoc.save();
+    const result = cancelMission(playerDoc.toObject());
 
-    res.status(200).json(result);
-  } else {
-    res.status(400).json(result);
-  }
-});
-
-export const claimMission = asyncHandler(async (req: any, res: any) => {
-  console.log("🔍 [missionController.claimMission] Starting claim mission");
-
-  const playerDoc = req.player;
-  console.log(2222, playerDoc);
-  const activeMission = playerDoc.activeMission;
-
-  if (!activeMission) {
-    res.status(400).json({ success: false, message: "No active mission." });
-    return;
-  }
-
-  console.log(
-    "🔍 [missionController.claimMission] Current playerDoc.activeBoosts:",
-    JSON.stringify(playerDoc.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [missionController.claimMission] Current playerDoc.activeBoosts type:",
-    typeof playerDoc.activeBoosts
-  );
-  console.log(
-    "🔍 [missionController.claimMission] Current playerDoc.activeBoosts isArray:",
-    Array.isArray(playerDoc.activeBoosts)
-  );
-
-  const result = claimMissionLogic(playerDoc.toObject(), activeMission);
-
-  if (result.success && result.newPlayerState) {
-    console.log(
-      "🔍 [missionController.claimMission] Logic result.newPlayerState.activeBoosts:",
-      JSON.stringify(result.newPlayerState.activeBoosts, null, 2)
-    );
-    console.log(
-      "🔍 [missionController.claimMission] Logic result.newPlayerState.activeBoosts type:",
-      typeof result.newPlayerState.activeBoosts
-    );
-    console.log(
-      "🔍 [missionController.claimMission] Logic result.newPlayerState.activeBoosts isArray:",
-      Array.isArray(result.newPlayerState.activeBoosts)
-    );
-
-    // Check if activeBoosts is somehow a string
-    if (typeof result.newPlayerState.activeBoosts === "string") {
-      console.log(
-        "🔍 [missionController.claimMission] WARNING: activeBoosts is already a string!"
-      );
-      console.log(
-        "🔍 [missionController.claimMission] String content:",
-        result.newPlayerState.activeBoosts
-      );
+    if (result.success && result.newPlayerState) {
+      Object.assign(playerDoc, result.newPlayerState);
+      playerDoc.activeMission = null;
+      await playerDoc.save();
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
     }
-
-    console.log(
-      "🔍 [missionController.claimMission] About to update playerDoc properties individually"
-    );
-    console.log(
-      "🔍 [missionController.claimMission] playerDoc before updates:",
-      JSON.stringify(playerDoc.toObject(), null, 2)
-    );
-
-    // Update properties individually instead of using Object.assign to avoid Mongoose document corruption
-    playerDoc.level = result.newPlayerState.level;
-    playerDoc.xp = result.newPlayerState.xp;
-    playerDoc.gold = result.newPlayerState.gold;
-    playerDoc.dollars = result.newPlayerState.dollars;
-    playerDoc.power = result.newPlayerState.power;
-    playerDoc.inventory = result.newPlayerState.inventory;
-    playerDoc.equipment = result.newPlayerState.equipment;
-    playerDoc.equipmentUpgrades = result.newPlayerState.equipmentUpgrades;
-    playerDoc.equipmentEnchantments =
-      result.newPlayerState.equipmentEnchantments;
-    playerDoc.unlockedZoneIds = result.newPlayerState.unlockedZoneIds;
-    playerDoc.discoveredItemIds = result.newPlayerState.discoveredItemIds;
-    playerDoc.completedZoneIds = result.newPlayerState.completedZoneIds;
-    playerDoc.completedLongMissionZoneIds =
-      result.newPlayerState.completedLongMissionZoneIds;
-    playerDoc.permanentPowerBonus = result.newPlayerState.permanentPowerBonus;
-    playerDoc.powerMultiplier = result.newPlayerState.powerMultiplier;
-    console.log(1111, result.newPlayerState.activeBoosts);
-    // playerDoc.activeBoosts = result.newPlayerState.activeBoosts;
-    playerDoc.purchasedStoreUpgradeIds =
-      result.newPlayerState.purchasedStoreUpgradeIds;
-    playerDoc.unlockedBadgeIds = result.newPlayerState.unlockedBadgeIds;
-    playerDoc.defeatedBossIds = result.newPlayerState.defeatedBossIds;
-    playerDoc.purchasedLabEquipmentIds =
-      result.newPlayerState.purchasedLabEquipmentIds;
-    playerDoc.unlockedPermanentPerks =
-      result.newPlayerState.unlockedPermanentPerks;
-    playerDoc.globalBossCooldownEndTime =
-      result.newPlayerState.globalBossCooldownEndTime;
-    playerDoc.labLevel = result.newPlayerState.labLevel;
-    playerDoc.labXp = result.newPlayerState.labXp;
-    playerDoc.homunculusCreatedCount =
-      result.newPlayerState.homunculusCreatedCount;
-    playerDoc.homunculi = result.newPlayerState.homunculi;
-    playerDoc.consecutiveCancels = result.newPlayerState.consecutiveCancels;
-    playerDoc.hasEquippedWeapon = result.newPlayerState.hasEquippedWeapon;
-    playerDoc.highChanceForgeFails = result.newPlayerState.highChanceForgeFails;
-    playerDoc.consecutiveCommonCacheOpens =
-      result.newPlayerState.consecutiveCommonCacheOpens;
-    playerDoc.missionsCompleted = result.newPlayerState.missionsCompleted;
-    playerDoc.hasReceivedInitialBoost =
-      result.newPlayerState.hasReceivedInitialBoost;
-    playerDoc.tutorialStep = result.newPlayerState.tutorialStep;
-    playerDoc.tutorialCompleted = result.newPlayerState.tutorialCompleted;
-    playerDoc.isWalletConnected = result.newPlayerState.isWalletConnected;
-    playerDoc.ownsReptilianzNFT = result.newPlayerState.ownsReptilianzNFT;
-    playerDoc.hasSeenWalletConnectPrompt =
-      result.newPlayerState.hasSeenWalletConnectPrompt;
-    playerDoc.bossDefeatCounts = result.newPlayerState.bossDefeatCounts;
-    playerDoc.dailySafeguardUses = result.newPlayerState.dailySafeguardUses;
-    playerDoc.lastSafeguardUseTimestamp =
-      result.newPlayerState.lastSafeguardUseTimestamp;
-
-    console.log(
-      "🔍 [missionController.claimMission] After individual property updates, playerDoc.activeBoosts:",
-      JSON.stringify(playerDoc.activeBoosts, null, 2)
-    );
-    console.log(
-      "🔍 [missionController.claimMission] After individual property updates, playerDoc.activeBoosts type:",
-      typeof playerDoc.activeBoosts
-    );
-    console.log(
-      "🔍 [missionController.claimMission] After individual property updates, playerDoc.activeBoosts isArray:",
-      Array.isArray(playerDoc.activeBoosts)
-    );
-
-    // Check if activeBoosts got corrupted during property updates
-    if (typeof playerDoc.activeBoosts === "string") {
-      console.log(
-        "🔍 [missionController.claimMission] ERROR: activeBoosts became a string during property updates!"
-      );
-      console.log(
-        "🔍 [missionController.claimMission] String content:",
-        playerDoc.activeBoosts
-      );
-    }
-
-    // Clear the active mission
-    playerDoc.activeMission = null;
-
-    console.log(
-      "🔍 [missionController.claimMission] About to save playerDoc to database"
-    );
-    console.log(3333, playerDoc);
-    await playerDoc.save();
-    console.log(
-      "🔍 [missionController.claimMission] Successfully saved to database"
-    );
-
-    const responseData = { ...result, newPlayerState: playerDoc.toObject() };
-    console.log(
-      "🔍 [missionController.claimMission] Final response data:",
-      JSON.stringify(responseData, null, 2)
-    );
-
-    res.status(200).json(responseData);
-  } else {
-    res.status(400).json(result);
   }
-});
-
-export const cancelMission = asyncHandler(async (req: any, res: any) => {
-  const playerDoc = req.player;
-  const result = cancelMissionLogic(playerDoc.toObject());
-
-  if (result.success && result.newPlayerState) {
-    // Update properties individually instead of using Object.assign to avoid Mongoose document corruption
-    playerDoc.level = result.newPlayerState.level;
-    playerDoc.xp = result.newPlayerState.xp;
-    playerDoc.gold = result.newPlayerState.gold;
-    playerDoc.dollars = result.newPlayerState.dollars;
-    playerDoc.power = result.newPlayerState.power;
-    playerDoc.inventory = result.newPlayerState.inventory;
-    playerDoc.equipment = result.newPlayerState.equipment;
-    playerDoc.equipmentUpgrades = result.newPlayerState.equipmentUpgrades;
-    playerDoc.equipmentEnchantments =
-      result.newPlayerState.equipmentEnchantments;
-    playerDoc.unlockedZoneIds = result.newPlayerState.unlockedZoneIds;
-    playerDoc.discoveredItemIds = result.newPlayerState.discoveredItemIds;
-    playerDoc.completedZoneIds = result.newPlayerState.completedZoneIds;
-    playerDoc.completedLongMissionZoneIds =
-      result.newPlayerState.completedLongMissionZoneIds;
-    playerDoc.permanentPowerBonus = result.newPlayerState.permanentPowerBonus;
-    playerDoc.powerMultiplier = result.newPlayerState.powerMultiplier;
-    playerDoc.activeBoosts = result.newPlayerState.activeBoosts;
-    playerDoc.purchasedStoreUpgradeIds =
-      result.newPlayerState.purchasedStoreUpgradeIds;
-    playerDoc.unlockedBadgeIds = result.newPlayerState.unlockedBadgeIds;
-    playerDoc.defeatedBossIds = result.newPlayerState.defeatedBossIds;
-    playerDoc.purchasedLabEquipmentIds =
-      result.newPlayerState.purchasedLabEquipmentIds;
-    playerDoc.unlockedPermanentPerks =
-      result.newPlayerState.unlockedPermanentPerks;
-    playerDoc.globalBossCooldownEndTime =
-      result.newPlayerState.globalBossCooldownEndTime;
-    playerDoc.labLevel = result.newPlayerState.labLevel;
-    playerDoc.labXp = result.newPlayerState.labXp;
-    playerDoc.homunculusCreatedCount =
-      result.newPlayerState.homunculusCreatedCount;
-    playerDoc.homunculi = result.newPlayerState.homunculi;
-    playerDoc.consecutiveCancels = result.newPlayerState.consecutiveCancels;
-    playerDoc.hasEquippedWeapon = result.newPlayerState.hasEquippedWeapon;
-    playerDoc.highChanceForgeFails = result.newPlayerState.highChanceForgeFails;
-    playerDoc.consecutiveCommonCacheOpens =
-      result.newPlayerState.consecutiveCommonCacheOpens;
-    playerDoc.missionsCompleted = result.newPlayerState.missionsCompleted;
-    playerDoc.hasReceivedInitialBoost =
-      result.newPlayerState.hasReceivedInitialBoost;
-    playerDoc.tutorialStep = result.newPlayerState.tutorialStep;
-    playerDoc.tutorialCompleted = result.newPlayerState.tutorialCompleted;
-    playerDoc.isWalletConnected = result.newPlayerState.isWalletConnected;
-    playerDoc.ownsReptilianzNFT = result.newPlayerState.ownsReptilianzNFT;
-    playerDoc.hasSeenWalletConnectPrompt =
-      result.newPlayerState.hasSeenWalletConnectPrompt;
-    playerDoc.bossDefeatCounts = result.newPlayerState.bossDefeatCounts;
-    playerDoc.dailySafeguardUses = result.newPlayerState.dailySafeguardUses;
-    playerDoc.lastSafeguardUseTimestamp =
-      result.newPlayerState.lastSafeguardUseTimestamp;
-
-    // Clear the active mission
-    playerDoc.activeMission = null;
-    await playerDoc.save();
-    res.status(200).json({ ...result, newPlayerState: playerDoc.toObject() });
-  } else {
-    res.status(400).json(result);
-  }
-});
+);

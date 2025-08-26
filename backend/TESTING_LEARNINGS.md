@@ -1895,3 +1895,71 @@ The backend testing initiative has made **exceptional progress** with **9 out of
 
 **Next Phase Focus:**
 Complete the remaining 4 systems to achieve 100% backend testing coverage, establishing a bulletproof foundation for production deployment.
+
+# Testing Learnings & Tips/Tricks
+
+## Critical Mongoose Schema Issue (Resolved)
+
+**Problem**: `ActiveBoost.type` field was causing Mongoose validation failures because `type` is a reserved keyword in Mongoose schemas.
+
+**Error**: `Player validation failed: activeBoosts.0: Cast to [string] failed`
+
+**Solution**: Renamed `type` to `boostType` in both the interface and Mongoose schema.
+
+**Files Changed**:
+
+- `types.ts`: `ActiveBoost.type` → `ActiveBoost.boostType`
+- `backend/models/playerModel.ts`: Schema field `type` → `boostType`
+- All logic files updated to use `boostType`
+
+## Mongoose Object Reference Corruption (NEW - Critical Discovery)
+
+**Problem**: Using `Object.assign(playerDoc, result.newPlayerState)` was corrupting the `rewards` field in the response object, even though `rewards` was never assigned to the playerDoc.
+
+**What Happened**:
+
+- `result` was a const object containing `rewards` and `newPlayerState`
+- `Object.assign(playerDoc, result.newPlayerState)` created shared references
+- When `playerDoc.save()` was called, Mongoose's internal processing corrupted the `rewards` field
+- The response showed `rewards: MongooseDocument { undefined }` instead of the actual rewards
+
+**Why This Happened**:
+
+- JavaScript objects are passed by reference
+- `Object.assign` creates shared references between objects
+- Mongoose's save operation modifies the underlying objects
+- Since `result.rewards` and `result.newPlayerState` shared references, corruption spread
+
+**Solution**: Use deep copy instead of `Object.assign`:
+
+```typescript
+// BEFORE (BROKEN):
+Object.assign(playerDoc, result.newPlayerState);
+
+// AFTER (FIXED):
+playerDoc = { ...result.newPlayerState };
+// OR
+playerDoc = JSON.parse(JSON.stringify(result.newPlayerState));
+```
+
+**Lesson**: Never use `Object.assign` with Mongoose documents when you need to preserve the original object structure. Always use deep copies for response objects.
+
+## Potential Similar Issues to Check
+
+**Files that might have the same problem**:
+
+- `cancelMissionController` - uses `Object.assign(playerDoc, result.newPlayerState)`
+- `startMissionController` - might have similar issues
+- Any other controller that updates player state and returns response objects
+
+**Pattern to look for**:
+
+- `Object.assign(playerDoc, someObject)`
+- `playerDoc.property = someObject.property`
+- Any direct object assignment to Mongoose documents
+
+**Safe alternatives**:
+
+- Deep copy: `{ ...object }` or `JSON.parse(JSON.stringify(object))`
+- Individual property assignment: `playerDoc.level = newState.level`
+- Mongoose's `set()` method: `playerDoc.set(newState)`

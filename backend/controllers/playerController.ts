@@ -77,6 +77,9 @@ export const equipItem = asyncHandler(async (req: any, res: any) => {
   const result = equipItemLogic(playerDoc.toObject(), itemId);
 
   if (result.success && result.newPlayerState) {
+    // WARNING: If the response does not have a specific field, it might be corrupted due to
+    // Object.assign creating shared references that get corrupted by Mongoose's save operation.
+    // Consider using deep copy instead: { ...result.newPlayerState }
     Object.assign(playerDoc, result.newPlayerState);
     await playerDoc.save();
     res.status(200).json({ ...result, newPlayerState: playerDoc.toObject() });
@@ -91,6 +94,9 @@ export const unequipItem = asyncHandler(async (req: any, res: any) => {
 
   const newPlayerState = unequipItemLogic(playerDoc.toObject(), slot);
 
+  // WARNING: If the response does not have a specific field, it might be corrupted due to
+  // Object.assign creating shared references that get corrupted by Mongoose's save operation.
+  // Consider using deep copy instead: { ...newPlayerState }
   Object.assign(playerDoc, newPlayerState);
   res.status(200).json({ success: true, newPlayerState: playerDoc.toObject() });
 });
@@ -101,6 +107,9 @@ export const unlockZone = asyncHandler(async (req: any, res: any) => {
 
   const newPlayerState = unlockZoneLogic(playerDoc.toObject(), zoneId);
 
+  // WARNING: If the response does not have a specific field, it might be corrupted due to
+  // Object.assign creating shared references that get corrupted by Mongoose's save operation.
+  // Consider using deep copy instead: { ...newPlayerState }
   Object.assign(playerDoc, newPlayerState);
   await playerDoc.save();
   res.status(200).json({ success: true, newPlayerState: playerDoc.toObject() });

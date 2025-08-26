@@ -18,6 +18,9 @@ const handleLogic = asyncHandler(
     const result = logicFn(playerDoc.toObject(), ...args);
 
     if (result.success && result.newPlayerState) {
+      // WARNING: If the response does not have a specific field, it might be corrupted due to
+      // Object.assign creating shared references that get corrupted by Mongoose's save operation.
+      // Consider using deep copy instead: { ...result.newPlayerState }
       Object.assign(playerDoc, result.newPlayerState);
       await playerDoc.save();
       res.status(200).json({ ...result, newPlayerState: playerDoc.toObject() });

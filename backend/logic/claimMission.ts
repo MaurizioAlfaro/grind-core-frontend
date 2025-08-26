@@ -120,6 +120,12 @@ export const claimMission = (
     Array.isArray(badgeCheckResult.newPlayerState.activeBoosts)
   );
 
+  // Debug: Log the rewards being returned
+  console.log(
+    "🔍 [claimMission] Rewards being returned:",
+    JSON.stringify(rewards, null, 2)
+  );
+
   // Check if activeBoosts got corrupted somewhere in the logic
   if (typeof badgeCheckResult.newPlayerState.activeBoosts === "string") {
     console.log(

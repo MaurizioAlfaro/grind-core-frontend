@@ -113,18 +113,25 @@ export const startMission = (
   }
   // --- END TUTORIAL OVERRIDE ---
 
+  // Debug: Log the rewards being stored
+  console.log(
+    "🔍 [startMission] Rewards calculated and being stored:",
+    JSON.stringify(rewards, null, 2)
+  );
+
   const activeMission: ActiveMission = {
     zoneId,
     startTime: now,
     endTime,
     durationKey,
-    preRolledRewards: {
-      xp: 0,
-      gold: 0,
-      dollars: 0,
-      items: [],
-    },
+    preRolledRewards: rewards,
   };
+
+  // Debug: Log the activeMission being returned
+  console.log(
+    "🔍 [startMission] ActiveMission being returned:",
+    JSON.stringify(activeMission, null, 2)
+  );
 
   return { success: true, message: "Mission started!", activeMission };
 };

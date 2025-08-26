@@ -27,7 +27,7 @@ type ModalContent = {
 };
 
 export type UpgradeResult = {
-  slot: EquipmentSlot;
+  itemId: string;
   outcome: "success" | "stay" | "downgrade";
 } | null;
 
@@ -661,7 +661,9 @@ export const useGameLoop = () => {
         if (
           activeView === "forge" &&
           selectedForgeSlot === EquipmentSlot.Weapon &&
-          (gameState.player.equipmentUpgrades[EquipmentSlot.Weapon] || 0) === 0
+          (gameState.player.equipmentUpgrades[
+            gameState.player.equipment.Weapon
+          ] || 0) === 0
         ) {
           config = {
             step: 29,
@@ -689,7 +691,9 @@ export const useGameLoop = () => {
         if (
           activeView === "forge" &&
           selectedForgeSlot === EquipmentSlot.Weapon &&
-          (gameState.player.equipmentUpgrades[EquipmentSlot.Weapon] || 0) === 1
+          (gameState.player.equipmentUpgrades[
+            gameState.player.equipment.Weapon
+          ] || 0) === 1
         ) {
           config = {
             step: 31,
@@ -705,7 +709,9 @@ export const useGameLoop = () => {
         if (
           activeView === "forge" &&
           selectedForgeSlot === EquipmentSlot.Weapon &&
-          (gameState.player.equipmentUpgrades[EquipmentSlot.Weapon] || 0) === 2
+          (gameState.player.equipmentUpgrades[
+            gameState.player.equipment.Weapon
+          ] || 0) === 2
         ) {
           config = {
             step: 32,
@@ -721,7 +727,9 @@ export const useGameLoop = () => {
         if (
           activeView === "forge" &&
           equipment.Weapon === "cafeteria_spork" &&
-          (gameState.player.equipmentUpgrades[EquipmentSlot.Weapon] || 0) >= 3
+          (gameState.player.equipmentUpgrades[
+            gameState.player.equipment.Weapon
+          ] || 0) >= 3
         ) {
           config = {
             step: 33,
@@ -1093,14 +1101,29 @@ export const useGameLoop = () => {
     upgradeItem: useCallback(
       async (slot: EquipmentSlot, isSafe: boolean) => {
         if (!gameState) return;
-        const { tutorialStep, tutorialCompleted, equipmentUpgrades } =
-          gameState.player;
+        const {
+          tutorialStep,
+          tutorialCompleted,
+          equipmentUpgrades,
+          equipment,
+        } = gameState.player;
         if (!tutorialCompleted && tutorialStep < 29) {
           setLastMessage("Follow the tutorial to learn how to upgrade.");
           return;
         }
-        const currentLevel = equipmentUpgrades[slot] || 0;
-        const result = await apiService.upgradeItem({ slot, isSafe });
+
+        // Get the itemId from the selected slot
+        const itemId = equipment[slot];
+        if (!itemId) {
+          setLastMessage("No item equipped in this slot.");
+          return;
+        }
+
+        // Read upgrade level from itemId instead of slot
+        const currentLevel = equipmentUpgrades[itemId] || 0;
+
+        // Send itemId instead of slot to the backend
+        const result = await apiService.upgradeItem({ itemId, isSafe });
 
         if (
           handleApiResponse(result) &&
