@@ -127,8 +127,7 @@ DEV_PLAYER_STATES[0] = {
   consecutiveCommonCacheOpens: 0,
   missionsCompleted: 0,
   hasReceivedInitialBoost: false,
-  tutorialStep: 1,
-  tutorialCompleted: false,
+  ...completedTutorialState,
   ...baseStateAdditions,
 };
 

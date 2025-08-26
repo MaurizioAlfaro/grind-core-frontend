@@ -55,8 +55,8 @@ const PlayerSchema = new mongoose.Schema(
     consecutiveCommonCacheOpens: { type: Number, default: 0 },
     missionsCompleted: { type: Number, default: 0 },
     hasReceivedInitialBoost: { type: Boolean, default: false },
-    tutorialStep: { type: Number, default: 1 },
-    tutorialCompleted: { type: Boolean, default: false },
+    tutorialStep: { type: Number, default: 99 },
+    tutorialCompleted: { type: Boolean, default: true },
     activeMission: {
       zoneId: String,
       startTime: Number,

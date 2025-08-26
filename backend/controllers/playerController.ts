@@ -36,28 +36,25 @@ export const updateTutorialStep = asyncHandler(async (req: any, res: any) => {
   const { tutorialStep, tutorialCompleted } = req.body;
   const playerDoc = req.player;
 
-  // Validate tutorial step
+  // Validate tutorial step - allow step 99 to disable tutorial
   if (
     typeof tutorialStep !== "number" ||
     tutorialStep < 1 ||
-    tutorialStep > 39
+    (tutorialStep > 39 && tutorialStep !== 99)
   ) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Invalid tutorial step. Must be between 1 and 39.",
-      });
+    res.status(400).json({
+      success: false,
+      message:
+        "Invalid tutorial step. Must be between 1 and 39, or 99 to disable.",
+    });
     return;
   }
 
   if (typeof tutorialCompleted !== "boolean") {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "tutorialCompleted must be a boolean.",
-      });
+    res.status(400).json({
+      success: false,
+      message: "tutorialCompleted must be a boolean.",
+    });
     return;
   }
 
