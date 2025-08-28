@@ -313,6 +313,62 @@ export const generateRecoveryString = async (req: Request, res: Response) => {
 };
 
 // Authenticate using recovery string
+// Link existing local player with a new wallet
+export const linkWallet = async (req: Request, res: Response) => {
+  try {
+    const { walletAddress, playerData } = req.body;
+
+    if (!walletAddress || !playerData) {
+      res
+        .status(400)
+        .json({ error: "Wallet address and player data required" });
+      return;
+    }
+
+    // Check if wallet is already linked to another player
+    const existingPlayer = await Player.findOne({ walletAddress });
+    if (existingPlayer) {
+      res
+        .status(400)
+        .json({ error: "Wallet already linked to another player" });
+      return;
+    }
+
+    // Find the local player by guestId
+    const localPlayer = await Player.findOne({ guestId: playerData.guestId });
+    if (!localPlayer) {
+      res.status(404).json({ error: "Local player not found" });
+      return;
+    }
+
+    // Link the wallet to the local player
+    localPlayer.walletAddress = walletAddress;
+    localPlayer.isWalletConnected = true;
+    localPlayer.hasSeenWalletConnectPrompt = true;
+    await localPlayer.save();
+
+    // Generate new JWT with wallet address
+    const token = jwt.sign(
+      {
+        playerId: localPlayer._id,
+        guestId: localPlayer.guestId,
+        walletAddress: localPlayer.walletAddress,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60, // 30 days
+      },
+      process.env.JWT_SECRET || "fallback-secret"
+    );
+
+    res.json({
+      token,
+      player: localPlayer,
+    });
+  } catch (error) {
+    console.error("Wallet linking error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export const authenticateWithRecovery = async (req: Request, res: Response) => {
   try {
     const { recoveryString } = req.body;

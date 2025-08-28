@@ -10,7 +10,22 @@ import type {
   ActiveBoost,
   PlayerState,
   HomunculusEquipmentSlot as HomunculusSlot,
+  ActiveMission,
 } from "../types";
+
+// Helper function to validate if an activeMission is complete and valid
+const isValidActiveMission = (
+  activeMission: any
+): activeMission is ActiveMission => {
+  return (
+    activeMission &&
+    typeof activeMission === "object" &&
+    activeMission.zoneId &&
+    typeof activeMission.startTime === "number" &&
+    typeof activeMission.endTime === "number" &&
+    activeMission.durationKey
+  );
+};
 import { ItemType, EquipmentSlot } from "../types";
 import { persistenceService } from "../services/persistenceService";
 import { apiService } from "../services/apiService";
@@ -18,6 +33,17 @@ import { clockService } from "../services/clockService";
 import type { LeaderboardEntry } from "../constants/leaderboard";
 import type { TutorialConfig } from "../features/tutorial/Tutorial";
 import type { AppView } from "../features/navigation/FooterNav";
+
+// Helper function to get wallet provider
+const getProvider = () => {
+  if ("solana" in window) {
+    const provider = (window as any).solana;
+    if (provider && provider.isPhantom) {
+      return provider;
+    }
+  }
+  return undefined;
+};
 
 const useRealBackEnd = true;
 
@@ -76,6 +102,17 @@ export const useGameLoop = () => {
     useState(false);
   const [pendingMissionRewards, setPendingMissionRewards] =
     useState<Rewards | null>(null);
+
+  // Wallet linking modal state
+  const [walletChoiceModal, setWalletChoiceModal] = useState<{
+    isOpen: boolean;
+    walletPlayerData: any;
+    jwtToken: string | null;
+  }>({
+    isOpen: false,
+    walletPlayerData: null,
+    jwtToken: null,
+  });
   const [viewingBuffInfo, setViewingBuffInfo] = useState<ActiveBoost | null>(
     null
   );
@@ -106,15 +143,26 @@ export const useGameLoop = () => {
         if (storedPlayerData && authToken) {
           // OPTIMISTIC LOADING: Show game immediately from localStorage
           const playerState = JSON.parse(storedPlayerData);
-          setGameState({ player: playerState, activeMission: null });
+
+          // Restore activeMission from localStorage if it exists and is valid
+          const activeMission = isValidActiveMission(playerState.activeMission)
+            ? playerState.activeMission
+            : null;
+
+          setGameState({ player: playerState, activeMission });
           setIsInitialized(true);
           setIsLoading(false);
 
           // BACKGROUND REFRESH: Fetch fresh data from server
           try {
             const freshPlayerState = await apiService.getPlayer();
-            // Update with fresh data if successful
-            setGameState({ player: freshPlayerState, activeMission: null });
+            // Update with fresh data if successful, preserving activeMission if it exists and is valid
+            const activeMission = isValidActiveMission(
+              freshPlayerState.activeMission
+            )
+              ? freshPlayerState.activeMission
+              : null;
+            setGameState({ player: freshPlayerState, activeMission });
             localStorage.setItem(
               "playerData",
               JSON.stringify(freshPlayerState)
@@ -139,7 +187,10 @@ export const useGameLoop = () => {
         // No stored data, try to load from backend
         const playerState = await apiService.getPlayer();
         // The API returns a PlayerState, but the game loop manages a GameState
-        setGameState({ player: playerState, activeMission: null });
+        const activeMission = isValidActiveMission(playerState.activeMission)
+          ? playerState.activeMission
+          : null;
+        setGameState({ player: playerState, activeMission });
         setIsInitialized(true);
       } catch (error) {
         console.error("Failed to load game from server:", error);
@@ -156,7 +207,10 @@ export const useGameLoop = () => {
         "🎮 [useGameLoop] Recovery authentication detected, updating gameState"
       );
       const { player } = event.detail;
-      setGameState({ player, activeMission: null });
+      const activeMission = isValidActiveMission(player.activeMission)
+        ? player.activeMission
+        : null;
+      setGameState({ player, activeMission });
       setIsInitialized(true);
       setIsLoading(false);
     };
@@ -190,10 +244,20 @@ export const useGameLoop = () => {
 
       if (result.success && result.newPlayerState) {
         // Update local state with backend response
-        setGameState((prevState) => ({
-          ...prevState!,
-          player: result.newPlayerState,
-        }));
+        setGameState((prevState) => {
+          const newState = {
+            ...prevState!,
+            player: result.newPlayerState,
+          };
+
+          // Update localStorage with the new player state
+          localStorage.setItem(
+            "playerData",
+            JSON.stringify(result.newPlayerState)
+          );
+
+          return newState;
+        });
       } else {
         console.error("Failed to update tutorial step:", result.message);
       }
@@ -207,6 +271,10 @@ export const useGameLoop = () => {
           tutorialStep: newStep,
           tutorialCompleted: shouldComplete,
         };
+
+        // Update localStorage with the new player state
+        localStorage.setItem("playerData", JSON.stringify(newPlayerState));
+
         return {
           ...prevState,
           player: newPlayerState,
@@ -236,10 +304,19 @@ export const useGameLoop = () => {
               "🔍 [Frontend] handleApiResponse: prevState.player before update:",
               prevState.player
             );
+
+            // Update both player state and activeMission if it exists in the new player state and is valid
+            const newActiveMission = isValidActiveMission(
+              result.newPlayerState.activeMission
+            )
+              ? result.newPlayerState.activeMission
+              : null;
             const newState = {
               ...prevState!,
               player: result.newPlayerState,
+              activeMission: newActiveMission,
             };
+
             console.log(
               "🔍 [Frontend] handleApiResponse: newState.player after update:",
               newState.player
@@ -920,10 +997,21 @@ export const useGameLoop = () => {
             (result.activeMission!.endTime - result.activeMission!.startTime) /
             1000;
           setTimeLeft(missionDurationSeconds);
-          setGameState((prevState) => ({
-            ...prevState!,
-            activeMission: result.activeMission!,
-          }));
+          setGameState((prevState) => {
+            const newState = {
+              ...prevState!,
+              activeMission: result.activeMission!,
+              player: {
+                ...prevState!.player,
+                activeMission: result.activeMission!, // Update player's activeMission
+              },
+            };
+
+            // Save complete state to localStorage
+            localStorage.setItem("playerData", JSON.stringify(newState.player));
+
+            return newState;
+          });
           if (!tutorialCompleted) {
             if (tutorialStep === 1 || tutorialStep === 18)
               safeAdvanceTutorial();
@@ -971,12 +1059,25 @@ export const useGameLoop = () => {
             "🔍 [Frontend] Using result.newPlayerState:",
             result.newPlayerState
           );
+
+          // Ensure the new player state has activeMission cleared
+          const updatedPlayerState = {
+            ...(result.newPlayerState || prevState.player),
+            activeMission: null,
+          };
+
           const newState = {
             ...prevState,
             activeMission: null,
-            // Keep the player state that was updated by handleApiResponse
-            player: result.newPlayerState || prevState.player,
+            player: updatedPlayerState,
           };
+
+          // Update localStorage with the cleared activeMission
+          localStorage.setItem(
+            "playerData",
+            JSON.stringify(updatedPlayerState)
+          );
+
           console.log("🔍 [Frontend] Final newState after update:", newState);
           return newState;
         });
@@ -1003,12 +1104,26 @@ export const useGameLoop = () => {
         // Update only the activeMission part, preserving the player state update from handleApiResponse
         setGameState((prevState) => {
           if (!prevState) return prevState;
-          return {
+
+          // Ensure the new player state has activeMission cleared
+          const updatedPlayerState = {
+            ...(result.newPlayerState || prevState.player),
+            activeMission: null,
+          };
+
+          const newState = {
             ...prevState,
             activeMission: null,
-            // Keep the player state that was updated by handleApiResponse
-            player: result.newPlayerState || prevState.player,
+            player: updatedPlayerState,
           };
+
+          // Update localStorage with the cleared activeMission
+          localStorage.setItem(
+            "playerData",
+            JSON.stringify(updatedPlayerState)
+          );
+
+          return newState;
         });
       }
       setIsCancelConfirmModalOpen(false);
@@ -1040,13 +1155,20 @@ export const useGameLoop = () => {
       if (!tutorialCompleted && tutorialStep === 23) {
         safeAdvanceTutorial();
         setLastMessage("A 100 Gold stipend has been added to your funds.");
-        setGameState((prevState) => ({
-          ...prevState!,
-          player: {
+        setGameState((prevState) => {
+          const newPlayerState = {
             ...prevState!.player,
             gold: prevState!.player.gold + 100,
-          },
-        }));
+          };
+
+          // Update localStorage with the new player state
+          localStorage.setItem("playerData", JSON.stringify(newPlayerState));
+
+          return {
+            ...prevState!,
+            player: newPlayerState,
+          };
+        });
       }
       setRewardsInfoModalZoneId(null);
     },
@@ -1244,11 +1366,18 @@ export const useGameLoop = () => {
         const newPlayerState = await apiService.resetPlayer({
           modeIndex: resetConfirmation,
         });
-        setGameState((p) => ({
-          ...p!,
-          player: newPlayerState,
-          activeMission: null,
-        }));
+        setGameState((p) => {
+          const newState = {
+            ...p!,
+            player: newPlayerState,
+            activeMission: null,
+          };
+
+          // Update localStorage with the new player state
+          localStorage.setItem("playerData", JSON.stringify(newPlayerState));
+
+          return newState;
+        });
       }
       setResetConfirmation(null);
     },
@@ -1401,49 +1530,138 @@ export const useGameLoop = () => {
     ),
     closeConnectWalletModal: () => {
       setIsConnectWalletModalOpen(false);
-      setGameState((prev) => ({
-        ...prev!,
-        player: {
+      setGameState((prev) => {
+        const newPlayerState = {
           ...prev!.player,
           hasSeenWalletConnectPrompt: true,
-        },
-      }));
+        };
+
+        // Update localStorage with the new player state
+        localStorage.setItem("playerData", JSON.stringify(newPlayerState));
+
+        return {
+          ...prev!,
+          player: newPlayerState,
+        };
+      });
     },
     connectWallet: async () => {
-      setLastMessage("Connecting to wallet...");
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      try {
+        setLastMessage("Connecting to wallet...");
 
-      const ownsNFT = isDevMode;
+        // 1. Get wallet provider
+        const provider = getProvider();
+        if (!provider) {
+          alert("Phantom wallet not found! Please install it.");
+          window.open("https://phantom.app/", "_blank");
+          return;
+        }
 
-      setGameState((prev) => {
-        if (!prev) return null;
-        const newPlayerState = {
-          ...prev.player,
-          isWalletConnected: true,
-          ownsReptilianzNFT: ownsNFT,
-          hasSeenWalletConnectPrompt: true,
-        };
-        // This is a client-side prediction; the next action will sync the true power from the server
-        return { ...prev, player: newPlayerState };
-      });
+        // 2. Connect wallet (shows native wallet dialog)
+        const { publicKey } = await provider.connect();
+        console.log("✅ Wallet connected:", publicKey.toString());
 
-      setIsConnectWalletModalOpen(false);
-      setLastMessage(
-        ownsNFT
-          ? "Wallet Connected! Reptilianz holder bonuses are now active!"
-          : "Wallet Connected! Progress is now securely backed up."
-      );
+        // 3. Request nonce from backend
+        console.log("🔄 Requesting nonce from backend...");
+        const nonceResponse = await fetch(
+          "http://localhost:5001/api/auth/nonce",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              walletAddress: publicKey.toString(),
+            }),
+          }
+        );
+
+        if (!nonceResponse.ok) {
+          throw new Error("Failed to get nonce from server");
+        }
+
+        const { message } = await nonceResponse.json();
+        console.log("📝 Message to sign:", message);
+
+        // 4. Sign the message with nonce (shows native wallet dialog)
+        const messageBytes = new TextEncoder().encode(message);
+        const { signature } = await provider.signMessage(messageBytes);
+
+        // 5. Log success
+        console.log("✅ Message signed successfully");
+        console.log("🔐 Signature:", Array.from(signature));
+        console.log("📍 Wallet Address:", publicKey.toString());
+
+        // 6. Authenticate with backend using signature
+        console.log("🔄 Authenticating with backend...");
+        const authResponse = await fetch(
+          "http://localhost:5001/api/auth/authenticate",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              walletAddress: publicKey.toString(),
+              signature: Array.from(signature),
+              message: message,
+            }),
+          }
+        );
+
+        if (!authResponse.ok) {
+          const errorData = await authResponse.json();
+          throw new Error(errorData.error || "Authentication failed");
+        }
+
+        const authData = await authResponse.json();
+        console.log("✅ Authentication successful:", authData);
+
+        // 7. Check if this is a new wallet or existing wallet
+        if (
+          authData.player.walletAddress &&
+          authData.player.walletAddress === publicKey.toString()
+        ) {
+          // This is an existing wallet account - show choice modal
+          actions.showWalletChoiceModal(authData.player, authData.token);
+        } else {
+          // This is a new wallet - link it to the current local player
+          await actions.linkWalletToLocalPlayer(publicKey.toString());
+        }
+
+        setIsConnectWalletModalOpen(false);
+      } catch (error: any) {
+        console.error("Wallet connection failed:", error);
+
+        // Clear any existing wallet choice modal state
+        setWalletChoiceModal({
+          isOpen: false,
+          walletPlayerData: null,
+          jwtToken: null,
+        });
+
+        if (error.code === 4001) {
+          setLastMessage("Wallet connection was rejected by user.");
+        } else {
+          setLastMessage(`Failed to connect wallet: ${error.message}`);
+        }
+      }
     },
     disconnectWallet: () => {
       setGameState((prev) => {
         if (!prev) return null;
+        const newPlayerState = {
+          ...prev.player,
+          isWalletConnected: false,
+          ownsReptilianzNFT: false,
+        };
+
+        // Update localStorage with the new player state
+        localStorage.setItem("playerData", JSON.stringify(newPlayerState));
+
         return {
           ...prev,
-          player: {
-            ...prev.player,
-            isWalletConnected: false,
-            ownsReptilianzNFT: false,
-          },
+          player: newPlayerState,
         };
       });
       setLastMessage("Wallet disconnected.");
@@ -1453,14 +1671,144 @@ export const useGameLoop = () => {
       if (!isDevMode || !gameState) return;
       setGameState((prev) => {
         if (!prev) return null;
+        const newPlayerState = {
+          ...prev.player,
+          ownsReptilianzNFT: !prev.player.ownsReptilianzNFT,
+        };
+
+        // Update localStorage with the new player state
+        localStorage.setItem("playerData", JSON.stringify(newPlayerState));
+
         return {
           ...prev,
-          player: {
-            ...prev.player,
-            ownsReptilianzNFT: !prev.player.ownsReptilianzNFT,
-          },
+          player: newPlayerState,
         };
       });
+    },
+
+    // Helper functions for wallet linking
+    showWalletChoiceModal: (walletPlayerData: any, jwtToken: string) => {
+      setWalletChoiceModal({
+        isOpen: true,
+        walletPlayerData,
+        jwtToken,
+      });
+    },
+
+    closeWalletChoiceModal: () => {
+      setWalletChoiceModal({
+        isOpen: false,
+        walletPlayerData: null,
+        jwtToken: null,
+      });
+    },
+
+    linkWalletToLocalPlayer: async (walletAddress: string) => {
+      try {
+        setLastMessage("Linking wallet to local account...");
+
+        // Get current local player data
+        const localPlayerData = gameState?.player;
+        if (!localPlayerData) {
+          throw new Error("No local player data found");
+        }
+
+        // Call the link-wallet endpoint
+        const response = await fetch(
+          "http://localhost:5001/api/auth/link-wallet",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              walletAddress,
+              playerData: localPlayerData,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to link wallet");
+        }
+
+        const authData = await response.json();
+
+        // Update localStorage with new token and player data
+        localStorage.setItem("authToken", authData.token);
+        localStorage.setItem("playerData", JSON.stringify(authData.player));
+
+        // Update game state
+        setGameState((prev) => {
+          if (!prev) return null;
+          const activeMission = isValidActiveMission(
+            authData.player.activeMission
+          )
+            ? authData.player.activeMission
+            : null;
+          return {
+            ...prev,
+            player: authData.player,
+            activeMission,
+          };
+        });
+
+        setLastMessage(
+          "Wallet linked successfully! Progress is now securely backed up."
+        );
+      } catch (error: any) {
+        console.error("Wallet linking failed:", error);
+        setLastMessage(`Failed to link wallet: ${error.message}`);
+      }
+    },
+
+    continueWithWalletData: async () => {
+      try {
+        setLastMessage("Switching to wallet account...");
+
+        // Get the wallet player data and JWT token from the modal state
+        const { walletPlayerData, jwtToken } = walletChoiceModal;
+        if (!walletPlayerData || !jwtToken) {
+          throw new Error(
+            "Wallet data or JWT token not found. Please try connecting your wallet again."
+          );
+        }
+
+        // Update localStorage with wallet player data AND JWT token
+        localStorage.setItem("playerData", JSON.stringify(walletPlayerData));
+        localStorage.setItem("authToken", jwtToken);
+
+        // Also store guestId separately for consistency
+        if (walletPlayerData.guestId) {
+          localStorage.setItem("guestId", walletPlayerData.guestId);
+        }
+
+        // Update game state with wallet player data
+        setGameState((prev) => {
+          if (!prev) return null;
+          const activeMission = isValidActiveMission(
+            walletPlayerData.activeMission
+          )
+            ? walletPlayerData.activeMission
+            : null;
+          return {
+            ...prev,
+            player: walletPlayerData,
+            activeMission,
+          };
+        });
+
+        setLastMessage("Switched to wallet account successfully!");
+        setWalletChoiceModal({
+          isOpen: false,
+          walletPlayerData: null,
+          jwtToken: null,
+        });
+      } catch (error: any) {
+        console.error("Failed to switch to wallet account:", error);
+        setLastMessage(`Failed to switch account: ${error.message}`);
+      }
     },
   };
 
@@ -1489,6 +1837,7 @@ export const useGameLoop = () => {
       resetConfirmation,
       isInitialBoostModalOpen,
       isConnectWalletModalOpen,
+      walletChoiceModal,
       pendingMissionRewards,
       viewingBuffInfo,
       tutorialConfig,
@@ -1525,6 +1874,7 @@ export const useGameLoop = () => {
     resetConfirmation,
     isInitialBoostModalOpen,
     isConnectWalletModalOpen,
+    walletChoiceModal,
     pendingMissionRewards,
     viewingBuffInfo,
     tutorialConfig,

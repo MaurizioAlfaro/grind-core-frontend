@@ -6,6 +6,7 @@ import {
   createNewAccount,
   generateRecoveryString,
   authenticateWithRecovery,
+  linkWallet,
 } from "../controllers/authController";
 import { authMiddleware } from "../middleware/authMiddleware";
 
@@ -15,6 +16,7 @@ const router = express.Router();
 router.post("/nonce", getNonce);
 router.post("/authenticate", authenticate);
 router.post("/new-account", createNewAccount);
+router.post("/link-wallet", linkWallet);
 
 // Protected routes
 router.post("/disconnect", authMiddleware, disconnect);

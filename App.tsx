@@ -34,6 +34,7 @@ import { InitialBoostModal } from "./features/rewards/InitialBoostModal";
 
 import { SettingsView } from "./features/settings/SettingsView";
 import { BuffInfoModal } from "./components/common/BuffInfoModal";
+import { WalletLinkingModal } from "./components/common/WalletLinkingModal";
 import { Tutorial } from "./features/tutorial/Tutorial";
 import { ServerErrorModal } from "./components/common/ServerErrorModal";
 
@@ -74,6 +75,7 @@ const App: React.FC = () => {
     resetConfirmation,
     isInitialBoostModalOpen,
     isConnectWalletModalOpen,
+    walletChoiceModal,
     viewingBuffInfo,
     tutorialConfig,
     activeView,
@@ -385,12 +387,7 @@ const App: React.FC = () => {
         {isInitialBoostModalOpen && (
           <InitialBoostModal onClose={actions.closeInitialBoostModal} />
         )}
-        {isConnectWalletModalOpen && (
-          <ConnectWalletModal
-            onConnect={actions.connectWallet}
-            onClose={actions.closeConnectWalletModal}
-          />
-        )}
+
         {viewingBuffInfo && (
           <BuffInfoModal
             buff={viewingBuffInfo}
@@ -554,6 +551,20 @@ const App: React.FC = () => {
           isOpen={showServerErrorModal}
           onClose={() => setShowServerErrorModal(false)}
           error={serverError || ""}
+        />
+
+        {/* Wallet Linking Modal */}
+        <WalletLinkingModal
+          isOpen={walletChoiceModal.isOpen}
+          onClose={actions.closeWalletChoiceModal}
+          onKeepLocalData={() =>
+            actions.linkWalletToLocalPlayer(
+              walletChoiceModal.walletPlayerData?.walletAddress
+            )
+          }
+          onContinueWithWalletData={() => actions.continueWithWalletData()}
+          walletPlayerData={walletChoiceModal.walletPlayerData}
+          isLoading={false}
         />
       </div>
     </>
