@@ -1,3 +1,5 @@
+import { walletAuthService } from "./walletAuthService";
+
 const API_URL = "http://localhost:5001/api";
 
 const post = async (endpoint: string, body: any) => {
@@ -6,6 +8,7 @@ const post = async (endpoint: string, body: any) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...walletAuthService.getAuthHeaders(),
       },
       body: JSON.stringify(body),
     });
@@ -33,7 +36,11 @@ const post = async (endpoint: string, body: any) => {
 
 const get = async (endpoint: string) => {
   try {
-    const response = await fetch(`${API_URL}${endpoint}`);
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      headers: {
+        ...walletAuthService.getAuthHeaders(),
+      },
+    });
     const data = await response.json();
 
     if (!response.ok) {

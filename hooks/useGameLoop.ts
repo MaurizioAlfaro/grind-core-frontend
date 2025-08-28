@@ -53,6 +53,8 @@ export const useGameLoop = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isDevMode, setIsDevMode] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [showServerErrorModal, setShowServerErrorModal] = useState(false);
   const [forgeUpgradeResult, setForgeUpgradeResult] =
     useState<UpgradeResult>(null);
   const [unlockedBadgesModal, setUnlockedBadgesModal] = useState<Badge[]>([]);
@@ -97,9 +99,44 @@ export const useGameLoop = () => {
   useEffect(() => {
     const initialize = async () => {
       try {
-        // Clear any old local storage state
-        persistenceService.clearGameState();
+        // Check if we have stored player data first
+        const storedPlayerData = localStorage.getItem("playerData");
+        const authToken = localStorage.getItem("authToken");
 
+        if (storedPlayerData && authToken) {
+          // OPTIMISTIC LOADING: Show game immediately from localStorage
+          const playerState = JSON.parse(storedPlayerData);
+          setGameState({ player: playerState, activeMission: null });
+          setIsInitialized(true);
+          setIsLoading(false);
+
+          // BACKGROUND REFRESH: Fetch fresh data from server
+          try {
+            const freshPlayerState = await apiService.getPlayer();
+            // Update with fresh data if successful
+            setGameState({ player: freshPlayerState, activeMission: null });
+            localStorage.setItem(
+              "playerData",
+              JSON.stringify(freshPlayerState)
+            );
+            console.log("✅ Fresh player data loaded from server");
+          } catch (refreshError) {
+            console.warn(
+              "⚠️ Failed to refresh player data from server:",
+              refreshError
+            );
+            // Show error modal for server fetch failures
+            setServerError(
+              refreshError instanceof Error
+                ? refreshError.message
+                : "Unknown server error"
+            );
+            setShowServerErrorModal(true);
+          }
+          return;
+        }
+
+        // No stored data, try to load from backend
         const playerState = await apiService.getPlayer();
         // The API returns a PlayerState, but the game loop manages a GameState
         setGameState({ player: playerState, activeMission: null });
@@ -184,6 +221,13 @@ export const useGameLoop = () => {
               "🔍 [Frontend] handleApiResponse: newState.player after update:",
               newState.player
             );
+
+            // Update stored player data in localStorage
+            localStorage.setItem(
+              "playerData",
+              JSON.stringify(result.newPlayerState)
+            );
+
             return newState;
           });
         }
@@ -1428,6 +1472,9 @@ export const useGameLoop = () => {
       activeView,
       selectedForgeSlot,
       actions,
+      serverError,
+      showServerErrorModal,
+      setShowServerErrorModal,
     };
   }
 
@@ -1461,5 +1508,8 @@ export const useGameLoop = () => {
     activeView,
     selectedForgeSlot,
     actions,
+    serverError,
+    showServerErrorModal,
+    setShowServerErrorModal,
   };
 };

@@ -344,9 +344,12 @@ export interface PlayerState {
   tutorialStep?: number;
   tutorialCompleted?: boolean;
   // Wallet
+  walletAddress?: string;
   isWalletConnected?: boolean;
   ownsReptilianzNFT?: boolean;
   hasSeenWalletConnectPrompt?: boolean;
+  guestId?: string; // For guest accounts without wallet
+  user?: string; // For guest accounts without wallet
 
   // Global Attributes / Enchantments
   bossDefeatCounts?: { [bossId: string]: number };

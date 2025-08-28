@@ -80,6 +80,8 @@ const baseStateAdditions = {
   bossDefeatCounts: {},
   dailySafeguardUses: {},
   lastSafeguardUseTimestamp: 0,
+  walletAddress: undefined,
+  guestId: undefined,
   isWalletConnected: false,
   ownsReptilianzNFT: false,
   hasSeenWalletConnectPrompt: false,

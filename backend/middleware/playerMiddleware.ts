@@ -1,32 +1,49 @@
-import asyncHandler from 'express-async-handler';
-import Player from '../models/playerModel';
-import { INITIAL_PLAYER_STATE } from '../../constants/player';
-import { recalculatePower } from '../logic/recalculatePower';
+import asyncHandler from "express-async-handler";
+import Player from "../models/playerModel";
+import { authMiddleware } from "./authMiddleware";
 
-// A static ID for our single player. In a real app, this would come from a JWT.
-const MOCK_PLAYER_ID = '66a01123456789abcdef1234'; 
-
-// This middleware finds or creates the single player for the game.
-// It simulates what a real authentication middleware would do: find a user/player
-// and attach them to the request object.
+// This middleware finds the player based on the authenticated wallet address or guest ID
 export const playerMiddleware = asyncHandler(async (req: any, res, next) => {
-    let player = await Player.findById(MOCK_PLAYER_ID);
+  try {
+    // First run auth middleware to get authentication info
+    await authMiddleware(req, res, () => {});
+
+    if (res.statusCode === 401) {
+      return; // Auth middleware already sent error response
+    }
+
+    const walletAddress = req.walletAddress;
+    const playerId = req.playerId;
+    const guestId = req.guestId;
+
+    let player = null;
+
+    // Try to find player by wallet address first (for wallet users)
+    if (walletAddress) {
+      player = await Player.findOne({ walletAddress });
+    }
+
+    // If no wallet player found, try by guest ID (for guest users)
+    if (!player && guestId) {
+      player = await Player.findOne({ guestId });
+    }
+
+    // If still no player found, try by player ID (fallback)
+    if (!player && playerId) {
+      player = await Player.findById(playerId);
+    }
 
     if (!player) {
-        // If no player exists with this ID, create one.
-        // This happens on the very first run.
-        console.log("No player found, creating a new one...");
-        const initialState = { 
-            ...INITIAL_PLAYER_STATE,
-            _id: MOCK_PLAYER_ID,
-        };
-        const hydratedState = recalculatePower(initialState);
-        player = await Player.create(hydratedState);
-        console.log("New player created.");
+      res.status(400).json({ error: "Player not found" });
+      return;
     }
-    
+
     // Attach the mongoose document to the request object
     req.player = player;
 
     next();
+  } catch (error) {
+    console.error("Player middleware error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });

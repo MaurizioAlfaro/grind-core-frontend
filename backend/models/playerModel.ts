@@ -3,6 +3,7 @@ import type { PlayerState } from "../../types";
 
 const PlayerSchema = new mongoose.Schema(
   {
+    user: { type: String, unique: true, sparse: true },
     level: { type: Number, default: 1 },
     xp: { type: Number, default: 0 },
     gold: { type: Number, default: 0 },
@@ -75,6 +76,8 @@ const PlayerSchema = new mongoose.Schema(
         ],
       },
     },
+    walletAddress: { type: String, unique: true, sparse: true },
+    guestId: { type: String, unique: true, sparse: true },
     isWalletConnected: { type: Boolean, default: false },
     ownsReptilianzNFT: { type: Boolean, default: false },
     hasSeenWalletConnectPrompt: { type: Boolean, default: false },
