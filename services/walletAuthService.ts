@@ -47,6 +47,68 @@ class WalletAuthService {
     return stored ? JSON.parse(stored) : null;
   }
 
+  // Generate recovery string
+  async generateRecoveryString(): Promise<{
+    recoveryString: string;
+    documentId: string;
+  }> {
+    const response = await fetch(
+      "http://localhost:5001/api/auth/generate-recovery",
+      {
+        method: "POST",
+        headers: this.getAuthHeaders(),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to generate recovery string");
+    }
+
+    return await response.json();
+  }
+
+  // Authenticate with recovery string
+  async authenticateWithRecovery(
+    recoveryString: string
+  ): Promise<WalletAuthResponse> {
+    const response = await fetch("http://localhost:5001/api/auth/recovery", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ recoveryString }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Invalid recovery string");
+    }
+
+    const authData = await response.json();
+
+    console.log("🔍 [Recovery] Backend response:", authData);
+    console.log("🔍 [Recovery] Player data:", authData.player);
+    console.log("🔍 [Recovery] Player type:", typeof authData.player);
+    console.log(
+      "🔍 [Recovery] Player keys:",
+      Object.keys(authData.player || {})
+    );
+
+    // Store authentication data
+    this.token = authData.token;
+    this.walletAddress = authData.player.walletAddress || null;
+    localStorage.setItem("authToken", authData.token);
+    localStorage.setItem("playerData", JSON.stringify(authData.player));
+
+    if (authData.player.walletAddress) {
+      localStorage.setItem("walletAddress", authData.player.walletAddress);
+    }
+    if (authData.player.guestId) {
+      localStorage.setItem("guestId", authData.player.guestId);
+    }
+
+    return authData;
+  }
+
   // Check if user is authenticated
   isAuthenticated(): boolean {
     const guestId = localStorage.getItem("guestId");

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import type { PlayerState } from "../../types";
 import { StyledButton } from "../../components/common/StyledButton";
+import { walletAuthService } from "../../services/walletAuthService";
 import { PhantomIcon } from "../navigation/icons/PhantomIcon";
 import { GoldIcon } from "../player/icons/GoldIcon";
 import { XpIcon } from "../player/icons/XpIcon";
@@ -33,6 +34,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onLogout,
   isDevMode,
 }) => {
+  const [recoveryString, setRecoveryString] = useState<string | null>(null);
+  const [isGeneratingRecovery, setIsGeneratingRecovery] = useState(false);
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -118,6 +122,56 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               (Dev) Toggle NFT Status
             </StyledButton>
           )}
+        </StatusCard>
+
+        <StatusCard title="Recovery String">
+          <div className="space-y-4">
+            {recoveryString ? (
+              <div>
+                <p className="text-sm text-gray-400 mb-3">
+                  Save this recovery string somewhere safe. You can use it to
+                  restore your account on any device.
+                </p>
+                <div className="bg-gray-900 p-3 rounded border border-gray-600 font-mono text-sm break-all">
+                  {recoveryString}
+                </div>
+                <p className="text-xs text-yellow-400 mt-2">
+                  ⚠️ Keep this secret and safe! Anyone with this string can
+                  access your account.
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm text-gray-400 mb-3">
+                  Generate a recovery string to restore your account on other
+                  devices.
+                </p>
+                <StyledButton
+                  onClick={async () => {
+                    try {
+                      setIsGeneratingRecovery(true);
+                      const result =
+                        await walletAuthService.generateRecoveryString();
+                      setRecoveryString(result.recoveryString);
+                    } catch (error) {
+                      console.error(
+                        "Failed to generate recovery string:",
+                        error
+                      );
+                    } finally {
+                      setIsGeneratingRecovery(false);
+                    }
+                  }}
+                  disabled={isGeneratingRecovery}
+                  className="w-full"
+                >
+                  {isGeneratingRecovery
+                    ? "Generating..."
+                    : "Generate Recovery String"}
+                </StyledButton>
+              </div>
+            )}
+          </div>
         </StatusCard>
 
         <StatusCard title="Account Management">

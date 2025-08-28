@@ -149,6 +149,29 @@ export const useGameLoop = () => {
       }
     };
     initialize();
+
+    // Listen for recovery authentication events
+    const handleRecoveryAuth = (event: CustomEvent) => {
+      console.log(
+        "🎮 [useGameLoop] Recovery authentication detected, updating gameState"
+      );
+      const { player } = event.detail;
+      setGameState({ player, activeMission: null });
+      setIsInitialized(true);
+      setIsLoading(false);
+    };
+
+    window.addEventListener(
+      "recoveryAuthenticated",
+      handleRecoveryAuth as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "recoveryAuthenticated",
+        handleRecoveryAuth as EventListener
+      );
+    };
   }, []);
 
   const advanceTutorial = useCallback(async () => {

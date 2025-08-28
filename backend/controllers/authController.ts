@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { PublicKey } from "@solana/web3.js";
 import Player from "../models/playerModel";
+import { Recovery } from "../models/recoveryModel";
 import { recalculatePower } from "../logic/recalculatePower";
+import crypto from "crypto";
 
 interface AuthRequest extends Request {
   body: {
@@ -300,6 +302,95 @@ export const disconnect = async (req: Request, res: Response) => {
     res.json({ message: "Disconnected successfully" });
   } catch (error) {
     console.error("Disconnect error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Generate recovery string for authenticated user
+export const generateRecoveryString = async (req: Request, res: Response) => {
+  try {
+    const playerId = (req as any).playerId;
+    const guestId = (req as any).guestId;
+
+    if (!playerId && !guestId) {
+      res.status(401).json({ error: "Not authenticated" });
+      return;
+    }
+
+    // Find player by ID or guest ID
+    const player = await Player.findOne({
+      $or: [{ _id: playerId }, { guestId: guestId }],
+    });
+
+    if (!player) {
+      res.status(404).json({ error: "Player not found" });
+      return;
+    }
+
+    // Check if recovery string already exists
+    let recovery = await Recovery.findOne({ playerId: player._id });
+
+    if (!recovery) {
+      // Generate new recovery string
+      const recoveryString = crypto.randomBytes(32).toString("hex");
+      recovery = await Recovery.create({
+        playerId: player._id,
+        recoveryString,
+      });
+    }
+
+    res.json({
+      recoveryString: recovery.recoveryString,
+      documentId: recovery._id,
+    });
+  } catch (error) {
+    console.error("Recovery string generation error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Authenticate using recovery string
+export const authenticateWithRecovery = async (req: Request, res: Response) => {
+  try {
+    const { recoveryString } = req.body;
+
+    if (!recoveryString) {
+      res.status(400).json({ error: "Recovery string required" });
+      return;
+    }
+
+    // Find recovery document
+    const recovery = await Recovery.findOne({ recoveryString });
+    if (!recovery) {
+      res.status(401).json({ error: "Invalid recovery string" });
+      return;
+    }
+
+    // Find player
+    const player = await Player.findById(recovery.playerId);
+    if (!player) {
+      res.status(404).json({ error: "Player not found" });
+      return;
+    }
+
+    // Generate JWT token (30 days)
+    const token = jwt.sign(
+      {
+        playerId: player._id,
+        guestId: player.guestId,
+        walletAddress: player.walletAddress,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60, // 30 days
+      },
+      process.env.JWT_SECRET || "fallback-secret"
+    );
+
+    res.json({
+      token,
+      player,
+    });
+  } catch (error) {
+    console.error("Recovery authentication error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

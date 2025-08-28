@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { WalletIcon, KeyIcon, UserIcon } from "./icons";
 
 interface LoginScreenProps {
   onNewAccount: () => void;
   onWalletLogin: () => void;
-  onRecoveryLogin: () => void;
+  onRecoveryLogin: (recoveryString: string) => void;
 }
 
 const LoginOption: React.FC<{
@@ -54,6 +54,57 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   onWalletLogin,
   onRecoveryLogin,
 }) => {
+  const [showRecoveryInput, setShowRecoveryInput] = useState(false);
+  const [recoveryString, setRecoveryString] = useState("");
+
+  const handleRecoverySubmit = () => {
+    if (recoveryString.trim()) {
+      onRecoveryLogin(recoveryString.trim());
+    }
+  };
+
+  if (showRecoveryInput) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-orbitron text-cyan-400 mb-2">
+              Account Recovery
+            </h1>
+            <p className="text-gray-400">
+              Enter your recovery string to restore your account
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <textarea
+              value={recoveryString}
+              onChange={(e) => setRecoveryString(e.target.value)}
+              placeholder="Paste your recovery string here..."
+              className="w-full h-32 p-3 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 resize-none"
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowRecoveryInput(false)}
+                className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleRecoverySubmit}
+                disabled={!recoveryString.trim()}
+                className="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-600 text-white rounded transition-colors"
+              >
+                Restore Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
@@ -97,7 +148,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             icon={<KeyIcon />}
             title="Recovery Phrase"
             description="Restore your account using your recovery phrase. Never lose your progress again."
-            onClick={onRecoveryLogin}
+            onClick={() => setShowRecoveryInput(true)}
             variant="accent"
           />
         </div>

@@ -64,12 +64,32 @@ export const useAuthState = () => {
     setAuthState("authenticated");
   };
 
-  const handleRecoveryLogin = () => {
-    // For now, just mock the recovery login
-    console.log("Opening recovery phrase input...");
-    // In the future, this would open a recovery phrase input modal
-    setShowLoginScreen(false);
-    setAuthState("authenticated");
+  const handleRecoveryLogin = async (recoveryString: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const authData = await walletAuthService.authenticateWithRecovery(
+        recoveryString
+      );
+
+      setPlayer(authData.player);
+      setWalletAddress(authData.player.walletAddress || null);
+      setAuthState("authenticated");
+      setShowLoginScreen(false);
+
+      // Force update gameState in useGameLoop to prevent infinite loading
+      // This triggers the game to show immediately after recovery
+      window.dispatchEvent(
+        new CustomEvent("recoveryAuthenticated", {
+          detail: { player: authData.player },
+        })
+      );
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Recovery failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
