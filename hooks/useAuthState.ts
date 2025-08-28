@@ -47,6 +47,14 @@ export const useAuthState = () => {
       setShowLoginScreen(false);
       setAuthState("authenticated");
 
+      // Force update gameState in useGameLoop to prevent infinite loading
+      // This triggers the game to show immediately after new account creation
+      window.dispatchEvent(
+        new CustomEvent("recoveryAuthenticated", {
+          detail: { player: authResponse.player },
+        })
+      );
+
       return authResponse;
     } catch (error: any) {
       const errorMessage = error.message || "Failed to create new account";
@@ -56,12 +64,117 @@ export const useAuthState = () => {
     }
   };
 
-  const handleWalletLogin = () => {
-    // For now, just mock the wallet login
-    console.log("Opening wallet login...");
-    // In the future, this would open the wallet connection modal
-    setShowLoginScreen(false);
-    setAuthState("authenticated");
+  const handleWalletLogin = async () => {
+    try {
+      // 1. Get wallet provider
+      const provider = getProvider();
+      if (!provider) {
+        alert("Phantom wallet not found! Please install it.");
+        window.open("https://phantom.app/", "_blank");
+        return;
+      }
+
+      // 2. Connect wallet (shows native wallet dialog)
+      const { publicKey } = await provider.connect();
+      console.log("✅ Wallet connected:", publicKey.toString());
+
+      // 3. Request nonce from backend
+      console.log("🔄 Requesting nonce from backend...");
+      const nonceResponse = await fetch(
+        "http://localhost:5001/api/auth/nonce",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            walletAddress: publicKey.toString(),
+          }),
+        }
+      );
+
+      if (!nonceResponse.ok) {
+        throw new Error("Failed to get nonce from server");
+      }
+
+      const { nonce, message } = await nonceResponse.json();
+      console.log("✅ Nonce received:", nonce);
+      console.log("📝 Message to sign:", message);
+
+      // 4. Sign the message with nonce (shows native wallet dialog)
+      const messageBytes = new TextEncoder().encode(message);
+      const { signature } = await provider.signMessage(messageBytes);
+
+      // 5. Log success
+      console.log("✅ Message signed successfully");
+      console.log("🔐 Signature:", Array.from(signature));
+      console.log("📍 Wallet Address:", publicKey.toString());
+
+      // 6. Authenticate with backend using signature
+      console.log("🔄 Authenticating with backend...");
+      const authResponse = await fetch(
+        "http://localhost:5001/api/auth/authenticate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            walletAddress: publicKey.toString(),
+            signature: Array.from(signature),
+            message: message,
+          }),
+        }
+      );
+
+      if (!authResponse.ok) {
+        const errorData = await authResponse.json();
+        throw new Error(errorData.error || "Authentication failed");
+      }
+
+      const authData = await authResponse.json();
+      console.log("✅ Authentication successful:", authData);
+
+      // 7. Set authentication state
+      setWalletAddress(publicKey.toString());
+      setAuthState("authenticated");
+      setShowLoginScreen(false);
+
+      // 8. Store token and player data
+      localStorage.setItem("authToken", authData.token);
+      localStorage.setItem("playerData", JSON.stringify(authData.player));
+
+      // Also store guestId separately for consistency with existing code
+      if (authData.player.guestId) {
+        localStorage.setItem("guestId", authData.player.guestId);
+      }
+
+      // 9. Force update gameState in useGameLoop to prevent infinite loading
+      // This triggers the game to show immediately after wallet authentication
+      window.dispatchEvent(
+        new CustomEvent("recoveryAuthenticated", {
+          detail: { player: authData.player },
+        })
+      );
+    } catch (error: any) {
+      console.error("Wallet authentication failed:", error);
+      if (error.code === 4001) {
+        alert("Wallet connection was rejected by user.");
+      } else {
+        alert(`Failed to authenticate with wallet: ${error.message}`);
+      }
+    }
+  };
+
+  // Helper function to get wallet provider
+  const getProvider = () => {
+    if ("solana" in window) {
+      const provider = (window as any).solana;
+      if (provider && provider.isPhantom) {
+        return provider;
+      }
+    }
+    return undefined;
   };
 
   const handleRecoveryLogin = async (recoveryString: string) => {

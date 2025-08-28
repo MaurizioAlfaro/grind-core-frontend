@@ -31,7 +31,7 @@ import { WorkplaceModal } from "./features/lab/WorkplaceModal";
 import { HomunculusEquipmentModal } from "./features/lab/HomunculusEquipmentModal";
 import { WikiView } from "./features/wiki/WikiView";
 import { InitialBoostModal } from "./features/rewards/InitialBoostModal";
-import { ConnectWalletModal } from "./components/common/ConnectWalletModal";
+
 import { SettingsView } from "./features/settings/SettingsView";
 import { BuffInfoModal } from "./components/common/BuffInfoModal";
 import { Tutorial } from "./features/tutorial/Tutorial";

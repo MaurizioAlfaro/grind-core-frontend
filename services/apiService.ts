@@ -1,6 +1,10 @@
-import { walletAuthService } from "./walletAuthService";
-
 const API_URL = "http://localhost:5001/api";
+
+// Simple function to get auth headers directly from localStorage
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("authToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 const post = async (endpoint: string, body: any) => {
   try {
@@ -8,7 +12,7 @@ const post = async (endpoint: string, body: any) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...walletAuthService.getAuthHeaders(),
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(body),
     });
@@ -38,7 +42,7 @@ const get = async (endpoint: string) => {
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
       headers: {
-        ...walletAuthService.getAuthHeaders(),
+        ...getAuthHeaders(),
       },
     });
     const data = await response.json();

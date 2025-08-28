@@ -16,6 +16,8 @@
     "vite": "^5.3.4"
   },
   "dependencies": {
+    "@solana/web3.js": "^1.98.4",
+    "jsonwebtoken": "^9.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   }
