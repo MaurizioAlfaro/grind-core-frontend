@@ -55,7 +55,7 @@ export const ForgeSlot: React.FC<ForgeSlotProps> = ({
       onClick={() => onSelect(slot)}
       disabled={!item}
       data-slotid={slot}
-      className={`relative flex flex-col items-center justify-center w-24 h-28 p-2 bg-gray-800 rounded-lg border-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${borderClasses} ${getResultClasses()}`}
+      className={`relative flex flex-col items-center justify-center w-18 md:w-24 h-28 p-2 bg-gray-800 rounded-lg border-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${borderClasses} ${getResultClasses()}`}
     >
       <span className="absolute top-1 left-1 text-xs text-gray-500">
         {slot}

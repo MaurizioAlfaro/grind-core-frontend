@@ -286,7 +286,7 @@ export const Collection: React.FC<CollectionProps> = ({
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-orbitron mb-4 text-cyan-400">Equipment</h3>
-        <div className="grid grid-cols-3 sm:grid-cols-5 gap-4 justify-center">
+        <div className="grid grid-cols-5 gap-1 md:gap-3 justify-center">
           {Object.values(EquipmentSlot).map((slot) => {
             const itemId = player.equipment[slot];
             const upgradeLevel = itemId
