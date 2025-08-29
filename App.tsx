@@ -35,6 +35,7 @@ import { InitialBoostModal } from "./features/rewards/InitialBoostModal";
 import { SettingsView } from "./features/settings/SettingsView";
 import { BuffInfoModal } from "./components/common/BuffInfoModal";
 import { WalletLinkingModal } from "./components/common/WalletLinkingModal";
+import { ConnectWalletModal } from "./components/common/ConnectWalletModal";
 import { Tutorial } from "./features/tutorial/Tutorial";
 import { ServerErrorModal } from "./components/common/ServerErrorModal";
 import CasinoView from "./components/casino/CasinoView";
@@ -392,6 +393,13 @@ const App: React.FC = () => {
           <InitialBoostModal onClose={actions.closeInitialBoostModal} />
         )}
 
+        {isConnectWalletModalOpen && (
+          <ConnectWalletModal
+            onConnect={actions.connectWallet}
+            onClose={actions.closeConnectWalletModal}
+          />
+        )}
+
         {viewingBuffInfo && (
           <BuffInfoModal
             buff={viewingBuffInfo}
@@ -524,13 +532,21 @@ const App: React.FC = () => {
             />
 
             {/* Casino Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-4">
               <button
                 onClick={actions.openCasino}
                 className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <CasinoIcon />
                 <span>🎰 Casino</span>
+              </button>
+
+              <button
+                onClick={actions.showWalletConnectPrompt}
+                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                <span>🔗</span>
+                <span>Connect Wallet</span>
               </button>
             </div>
 

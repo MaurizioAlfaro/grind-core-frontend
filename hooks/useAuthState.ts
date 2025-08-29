@@ -55,6 +55,11 @@ export const useAuthState = () => {
         })
       );
 
+      // Also trigger wallet modal after a delay
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("showWalletModal", {}));
+      }, 3000);
+
       return authResponse;
     } catch (error: any) {
       const errorMessage = error.message || "Failed to create new account";
@@ -156,6 +161,11 @@ export const useAuthState = () => {
           detail: { player: authData.player },
         })
       );
+
+      // Also trigger wallet modal after a delay
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("showWalletModal", {}));
+      }, 3000);
     } catch (error: any) {
       console.error("Wallet authentication failed:", error);
       if (error.code === 4001) {
@@ -198,6 +208,11 @@ export const useAuthState = () => {
           detail: { player: authData.player },
         })
       );
+
+      // Also trigger wallet modal after a delay
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("showWalletModal", {}));
+      }, 3000);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Recovery failed");
     } finally {

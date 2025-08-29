@@ -100,6 +100,7 @@ export const useGameLoop = () => {
   const [isInitialBoostModalOpen, setIsInitialBoostModalOpen] = useState(false);
   const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] =
     useState(false);
+
   const [pendingMissionRewards, setPendingMissionRewards] =
     useState<Rewards | null>(null);
 
@@ -223,11 +224,22 @@ export const useGameLoop = () => {
       handleRecoveryAuth as EventListener
     );
 
+    // Listen for wallet modal trigger events
+    const handleShowWalletModal = () => {
+      console.log("🎮 [useGameLoop] Show wallet modal event received");
+      setTimeout(() => {
+        setIsConnectWalletModalOpen(true);
+      }, 1000);
+    };
+
+    window.addEventListener("showWalletModal", handleShowWalletModal);
+
     return () => {
       window.removeEventListener(
         "recoveryAuthenticated",
         handleRecoveryAuth as EventListener
       );
+      window.removeEventListener("showWalletModal", handleShowWalletModal);
     };
   }, []);
 
@@ -1504,6 +1516,13 @@ export const useGameLoop = () => {
           setIsConnectWalletModalOpen(true);
         }, 300);
       }
+    },
+    // Show wallet connect modal for all players
+    showWalletConnectPrompt: () => {
+      console.log(
+        "🎮 [useGameLoop] showWalletConnectPrompt called, setting modal to true"
+      );
+      setIsConnectWalletModalOpen(true);
     },
     openBuffInfoModal: (buff: ActiveBoost) => setViewingBuffInfo(buff),
     closeBuffInfoModal: () => setViewingBuffInfo(null),
