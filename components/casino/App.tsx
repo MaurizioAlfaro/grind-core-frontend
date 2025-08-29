@@ -84,7 +84,7 @@ const GameTab: React.FC<{
   <button
     onClick={onClick}
     disabled={isLocked}
-    className={`px-4 py-2 md:px-6 md:py-3 text-lg md:text-xl font-bold rounded-t-lg transition-colors focus:outline-none relative
+    className={`px-2 py-1 md:px-3 md:py-2 text-sm md:text-base font-bold rounded-t-lg transition-colors focus:outline-none relative
             ${
               isActive
                 ? "bg-dark-felt text-yellow-300"
@@ -97,7 +97,6 @@ const GameTab: React.FC<{
     {isLocked && (
       <div className="absolute -top-2 -right-2 flex flex-col items-center text-xs">
         <span className="text-gray-400">🔒</span>
-        <span className="text-gray-400">LVL {requiredLevel}</span>
       </div>
     )}
   </button>
