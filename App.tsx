@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useGameLoop } from "./hooks/useGameLoop";
 import { useAuthState } from "./hooks/useAuthState";
-import { LoginScreen } from "./components/common/LoginScreen";
+import CyberpunkLoginScreen from "./components/common/CyberpunkLoginScreen";
 import { walletAuthService } from "./services/walletAuthService";
 import { PlayerStats } from "./features/player/PlayerStats";
 import { RewardModal } from "./components/common/RewardModal";
@@ -114,7 +114,7 @@ const App: React.FC = () => {
   // Show login screen if user is not authenticated
   if (showLoginScreen) {
     return (
-      <LoginScreen
+      <CyberpunkLoginScreen
         onNewAccount={handleNewAccount}
         onWalletLogin={handleWalletLogin}
         onRecoveryLogin={handleRecoveryLogin}
