@@ -5,18 +5,63 @@ import RouletteGame from "./features/roulette";
 import Chat from "./features/chat";
 import DealerAvatar from "./components/DealerAvatar";
 
-const Disclaimer: React.FC = () => (
-  <div className="bg-gradient-to-r from-yellow-900/40 to-orange-900/40 border border-yellow-500/60 rounded-lg p-4 mb-3 text-center shadow-lg">
-    <div className="flex items-center justify-center space-x-2">
-      <span className="text-yellow-400 text-lg">⚠️</span>
-      <p className="text-yellow-100 text-sm font-medium">
-        <span className="font-bold text-yellow-300">Disclaimer:</span> Casino
-        chips are not related to gold as of now. They will be in the future.
-      </p>
-      <span className="text-yellow-400 text-lg">⚠️</span>
+const Disclaimer: React.FC = () => {
+  // Responsive dimensions
+  const isSmallScreen =
+    typeof window !== "undefined" && window.innerWidth < 640;
+  const isMediumScreen =
+    typeof window !== "undefined" && window.innerWidth < 768;
+
+  const disclaimerPadding = isSmallScreen
+    ? "0.75rem"
+    : isMediumScreen
+    ? "1rem"
+    : "1rem";
+  const disclaimerMargin = isSmallScreen ? "0.5rem" : "0.75rem";
+  const disclaimerFontSize = isSmallScreen ? "0.75rem" : "0.875rem";
+  const iconFontSize = isSmallScreen ? "1rem" : "1.125rem";
+
+  return (
+    <div
+      style={{
+        background:
+          "linear-gradient(to right, rgba(120, 53, 15, 0.4), rgba(194, 65, 12, 0.4))",
+        border: "1px solid rgba(245, 158, 11, 0.6)",
+        borderRadius: "0.5rem",
+        padding: disclaimerPadding,
+        marginBottom: disclaimerMargin,
+        textAlign: "center",
+        boxShadow:
+          "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "0.5rem",
+        }}
+      >
+        <span style={{ color: "#facc15", fontSize: iconFontSize }}>⚠️</span>
+        <p
+          style={{
+            color: "#fef3c7",
+            fontSize: disclaimerFontSize,
+            fontWeight: "500",
+          }}
+        >
+          <span style={{ fontWeight: "700", color: "#fbbf24" }}>
+            Disclaimer:
+          </span>{" "}
+          Casino chips are not related to gold as of now. They will be in the
+          future.
+        </p>
+        <span style={{ color: "#facc15", fontSize: iconFontSize }}>⚠️</span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -54,11 +99,56 @@ const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
 
   if (!isVisible) return null;
 
+  // Responsive dimensions
+  const isSmallScreen =
+    typeof window !== "undefined" && window.innerWidth < 640;
+  const isMediumScreen =
+    typeof window !== "undefined" && window.innerWidth < 768;
+
+  const buttonPadding = isSmallScreen
+    ? "0.5rem 1rem"
+    : isMediumScreen
+    ? "0.75rem 1.25rem"
+    : "1rem 1.5rem";
+  const buttonFontSize = isSmallScreen
+    ? "0.75rem"
+    : isMediumScreen
+    ? "0.875rem"
+    : "1rem";
+  const buttonTop = isSmallScreen ? "0.75rem" : "1rem";
+  const buttonLeft = isSmallScreen ? "0.75rem" : "1rem";
+  const successTop = isSmallScreen ? "2.5rem" : "3rem";
+
   return (
-    <div className="absolute top-4 left-4 z-20">
+    <div
+      style={{
+        position: "absolute",
+        top: buttonTop,
+        left: buttonLeft,
+        zIndex: 20,
+      }}
+    >
       <button
         onClick={addChips}
-        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition-colors text-sm"
+        style={{
+          padding: buttonPadding,
+          background: "#16a34a",
+          color: "white",
+          fontWeight: "700",
+          borderRadius: "0.5rem",
+          boxShadow:
+            "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+          transition: "background-color 0.15s ease-in-out",
+          border: "none",
+          cursor: "pointer",
+          fontSize: buttonFontSize,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#15803d";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "#16a34a";
+        }}
         title={`Add 1000 chips for testing (Current: ${currentChips})`}
       >
         🪙 +1000 Chips
@@ -66,7 +156,21 @@ const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
 
       {/* Success message */}
       {showSuccess && (
-        <div className="absolute top-12 left-0 bg-green-600 text-white px-3 py-2 rounded-lg shadow-lg text-sm animate-fade-in">
+        <div
+          style={{
+            position: "absolute",
+            top: successTop,
+            left: 0,
+            background: "#16a34a",
+            color: "white",
+            padding: "0.5rem 0.75rem",
+            borderRadius: "0.5rem",
+            boxShadow:
+              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+            fontSize: buttonFontSize,
+            animation: "fadeIn 0.3s ease-out forwards",
+          }}
+        >
           ✅ Added 1000 chips!
         </div>
       )}
@@ -80,27 +184,76 @@ const GameTab: React.FC<{
   onClick: () => void;
   isLocked?: boolean;
   requiredLevel?: number;
-}> = ({ title, isActive, onClick, isLocked, requiredLevel }) => (
-  <button
-    onClick={onClick}
-    disabled={isLocked}
-    className={`px-2 py-1 md:px-3 md:py-2 text-sm md:text-base font-bold rounded-t-lg transition-colors focus:outline-none relative
-            ${
-              isActive
-                ? "bg-dark-felt text-yellow-300"
-                : isLocked
-                ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                : "bg-black/30 text-white hover:bg-black/50"
-            }`}
-  >
-    {title}
-    {isLocked && (
-      <div className="absolute -top-2 -right-2 flex flex-col items-center text-xs">
-        <span className="text-gray-400">🔒</span>
-      </div>
-    )}
-  </button>
-);
+}> = ({ title, isActive, onClick, isLocked, requiredLevel }) => {
+  // Responsive dimensions
+  const isSmallScreen =
+    typeof window !== "undefined" && window.innerWidth < 640;
+  const isMediumScreen =
+    typeof window !== "undefined" && window.innerWidth < 768;
+
+  const tabPadding = isSmallScreen
+    ? "0.5rem 0.75rem"
+    : isMediumScreen
+    ? "0.75rem 1rem"
+    : "1rem 1.5rem";
+  const tabFontSize = isSmallScreen
+    ? "0.875rem"
+    : isMediumScreen
+    ? "1rem"
+    : "1.125rem";
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={isLocked}
+      style={{
+        padding: tabPadding,
+        fontSize: tabFontSize,
+        fontWeight: "700",
+        borderTopLeftRadius: "0.5rem",
+        borderTopRightRadius: "0.5rem",
+        transition: "colors 0.15s ease-in-out",
+        outline: "none",
+        position: "relative",
+        background: isActive
+          ? "#2a503e"
+          : isLocked
+          ? "#4b5563"
+          : "rgba(0, 0, 0, 0.3)",
+        color: isActive ? "#fbbf24" : isLocked ? "#9ca3af" : "#ffffff",
+        cursor: isLocked ? "not-allowed" : "pointer",
+        border: "none",
+      }}
+      onMouseEnter={(e) => {
+        if (!isLocked && !isActive) {
+          e.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isLocked && !isActive) {
+          e.currentTarget.style.background = "rgba(0, 0, 0, 0.3)";
+        }
+      }}
+    >
+      {title}
+      {isLocked && (
+        <div
+          style={{
+            position: "absolute",
+            top: "-0.5rem",
+            right: "-0.5rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            fontSize: "0.75rem",
+          }}
+        >
+          <span style={{ color: "#9ca3af" }}>🔒</span>
+        </div>
+      )}
+    </button>
+  );
+};
 
 const App: React.FC<{ playerLevel: number; currentPlayerId?: string }> = ({
   playerLevel,
@@ -110,10 +263,51 @@ const App: React.FC<{ playerLevel: number; currentPlayerId?: string }> = ({
     "blackjack" | "baccarat" | "roulette" | "chat"
   >("blackjack");
 
+  // Responsive dimensions
+  const isSmallScreen =
+    typeof window !== "undefined" && window.innerWidth < 640;
+  const isMediumScreen =
+    typeof window !== "undefined" && window.innerWidth < 768;
+
+  const containerPadding = isSmallScreen
+    ? "0.25rem"
+    : isMediumScreen
+    ? "0.5rem"
+    : "1rem";
+  const tabGap = isSmallScreen ? "0.25rem" : "0.5rem";
+
   return (
-    <div className="w-full h-full bg-felt-green flex flex-col items-center justify-start font-sans p-1 sm:p-2 md:p-4 overflow-hidden">
-      <div className="w-full max-w-7xl mx-auto flex flex-col h-full">
-        <div className="flex-shrink-0 flex space-x-1 sm:space-x-2">
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#35654d",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        fontFamily: "sans-serif",
+        padding: containerPadding,
+        overflow: "auto",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "80rem",
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            flexShrink: 0,
+            display: "flex",
+            gap: tabGap,
+          }}
+        >
           <GameTab
             title="Blackjack"
             isActive={activeGame === "blackjack"}
@@ -143,7 +337,14 @@ const App: React.FC<{ playerLevel: number; currentPlayerId?: string }> = ({
         {/* Disclaimer */}
         <Disclaimer />
 
-        <div className="relative flex-grow min-h-0">
+        <div
+          style={{
+            position: "relative",
+            flexGrow: 1,
+            minHeight: 0,
+            overflow: "auto",
+          }}
+        >
           {activeGame !== "chat" && <DealerAvatar />}
 
           {/* Add Chips Button - Only visible for blackjack */}
