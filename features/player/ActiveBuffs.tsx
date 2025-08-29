@@ -40,39 +40,49 @@ export const ActiveBuffs: React.FC<ActiveBuffsProps> = ({
   // Use the state variable instead of calling clockService directly
   const now = currentTime;
 
-  // Create array of 5 slots, filling with buffs and empty placeholders
-  const buffSlots = Array.from({ length: 5 }, (_, index) => {
-    const buff = activeBoosts[index];
-    if (!buff) {
-      return { isEmpty: true };
-    }
-
-    let displayInfo: { name: string; icon: string } | undefined;
-
-    if (buff.sourceId === "initial_boost") {
-      displayInfo = { name: "Initial Insight (15x Speed)", icon: "🚀" };
-    } else {
-      const itemData = ITEMS[buff.sourceId];
-      if (itemData) {
-        displayInfo = { name: itemData.name, icon: itemData.icon };
-      }
-    }
-
-    if (!displayInfo) return { isEmpty: true };
-
-    // Round down to the nearest second for consistent timing
+  // Filter out expired buffs first
+  const activeBuffs = activeBoosts.filter((buff) => {
     const timeLeftSeconds = Math.max(
       0,
       Math.floor((buff.endTime - now) / 1000)
     );
-
-    return {
-      isEmpty: false,
-      buff,
-      displayInfo,
-      timeLeftSeconds,
-    };
+    return timeLeftSeconds > 0;
   });
+
+  // If no active buffs after filtering, don't render anything
+  if (activeBuffs.length === 0) {
+    return null;
+  }
+
+  // Create array of slots, only for active buffs (max 5)
+  const buffSlots = activeBuffs
+    .slice(0, 5)
+    .map((buff, index) => {
+      let displayInfo: { name: string; icon: string } | undefined;
+
+      if (buff.sourceId === "initial_boost") {
+        displayInfo = { name: "Initial Insight (15x Speed)", icon: "🚀" };
+      } else {
+        const itemData = ITEMS[buff.sourceId];
+        if (itemData) {
+          displayInfo = { name: itemData.name, icon: itemData.icon };
+        }
+      }
+
+      if (!displayInfo) return null;
+
+      const timeLeftSeconds = Math.max(
+        0,
+        Math.floor((buff.endTime - now) / 1000)
+      );
+
+      return {
+        buff,
+        displayInfo,
+        timeLeftSeconds,
+      };
+    })
+    .filter(Boolean); // Remove any null entries
 
   return (
     <div>
@@ -81,25 +91,11 @@ export const ActiveBuffs: React.FC<ActiveBuffsProps> = ({
       </h3> */}
       <div className="grid grid-cols-5 gap-1 w-full">
         {buffSlots.map((slot, index) => {
-          if (slot.isEmpty) {
+          if (!slot) {
             return (
               <div
                 key={`empty-${index}`}
                 className="h-12 bg-gray-900/20 rounded-lg border border-gray-700/30 opacity-50"
-              />
-            );
-          }
-
-          // TypeScript guard to ensure these properties exist
-          if (
-            !slot.buff ||
-            !slot.displayInfo ||
-            slot.timeLeftSeconds === undefined
-          ) {
-            return (
-              <div
-                key={`error-${index}`}
-                className="h-12 bg-red-900/20 rounded-lg border border-red-700/30 opacity-50"
               />
             );
           }
@@ -120,6 +116,13 @@ export const ActiveBuffs: React.FC<ActiveBuffsProps> = ({
             </button>
           );
         })}
+        {/* Fill remaining slots with empty placeholders to maintain 5 columns */}
+        {Array.from({ length: 5 - buffSlots.length }, (_, index) => (
+          <div
+            key={`remaining-empty-${index}`}
+            className="h-12 bg-gray-900/20 rounded-lg border border-gray-700/30 opacity-50"
+          />
+        ))}
       </div>
     </div>
   );
