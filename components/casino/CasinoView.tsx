@@ -1,5 +1,6 @@
 import React from "react";
 import CasinoApp from "./App";
+import "./casino.css";
 
 interface CasinoViewProps {
   onClose: () => void;
