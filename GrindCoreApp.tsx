@@ -503,26 +503,16 @@ const GrindCoreApp: React.FC = () => {
 
         <header className="p-4 pt-12 sticky top-0 bg-gray-900 z-20">
           <div className="relative bg-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-700 shadow-lg p-4">
-            <PlayerStats player={gameState.player} />
+            <PlayerStats
+              player={gameState.player}
+              onOpenCasino={actions.openCasino}
+            />
             <div className="mt-4">
               <ActiveBuffs
                 activeBoosts={gameState.player.activeBoosts}
                 onViewBuff={actions.openBuffInfoModal}
               />
             </div>
-
-            {/* Casino Button - Only show when wallet is connected */}
-            {gameState.player.isWalletConnected && (
-              <div className="mt-4 flex justify-center gap-4">
-                <button
-                  onClick={actions.openCasino}
-                  className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
-                  <CasinoIcon />
-                  <span>🎰 Casino</span>
-                </button>
-              </div>
-            )}
 
             <div className="mt-4">
               <ContextualNavButton

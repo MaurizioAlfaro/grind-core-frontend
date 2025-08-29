@@ -5,9 +5,11 @@ import { PowerIcon } from "./icons/PowerIcon";
 import { XpIcon } from "./icons/XpIcon";
 import { GoldIcon } from "./icons/GoldIcon";
 import { DollarIcon } from "../../components/icons/DollarIcon";
+import { CasinoIcon } from "../navigation/icons/CasinoIcon";
 
 interface PlayerStatsProps {
   player: PlayerState;
+  onOpenCasino?: () => void;
 }
 
 const StatDisplay: React.FC<{
@@ -31,7 +33,10 @@ const StatDisplay: React.FC<{
   </div>
 );
 
-export const PlayerStats: React.FC<PlayerStatsProps> = ({ player }) => {
+export const PlayerStats: React.FC<PlayerStatsProps> = ({
+  player,
+  onOpenCasino,
+}) => {
   const xpForNextLevel = LEVEL_XP_REQUIREMENTS[player.level] || Infinity;
   const xpProgress =
     xpForNextLevel === Infinity ? 100 : (player.xp / xpForNextLevel) * 100;
@@ -39,9 +44,20 @@ export const PlayerStats: React.FC<PlayerStatsProps> = ({ player }) => {
   return (
     <div className="space-y-3">
       {player.reptilianzNFTs && player.reptilianzNFTs.length > 0 && (
-        <p className="text-xs font-orbitron font-bold text-transparent bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 bg-clip-text">
-          ✨ Verified Owner Bonus ✨
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-orbitron font-bold text-transparent bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 bg-clip-text">
+            ✨ Verified Owner Bonus ✨
+          </p>
+          {onOpenCasino && (
+            <button
+              onClick={onOpenCasino}
+              className="flex items-center gap-1 bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <CasinoIcon />
+              <span>Casino & Chat 🎰</span>
+            </button>
+          )}
+        </div>
       )}
       <div className="flex items-center gap-3">
         <h2
