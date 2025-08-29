@@ -49,16 +49,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <div className="space-y-4">
         <StatusCard title="Wallet Connection">
           {player.isWalletConnected ? (
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold text-green-400">Wallet Connected</p>
-                <p className="text-xs text-gray-500">
-                  Your progress is being saved to the cloud.
-                </p>
-              </div>
-              <StyledButton onClick={onDisconnect} variant="danger">
-                Disconnect
-              </StyledButton>
+            <div>
+              <p className="font-semibold text-green-400">Wallet Connected</p>
+              <p className="text-xs text-gray-500">
+                Your progress is being saved to the cloud.
+              </p>
+              <p className="text-xs text-cyan-400 font-mono mt-2 break-all">
+                {player.walletAddress}
+              </p>
             </div>
           ) : (
             <div className="flex items-center justify-between">
@@ -83,18 +81,29 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         <StatusCard title="Reptilianz NFT Bonuses">
           {player.ownsReptilianzNFT ? (
-            <div>
-              <p className="font-semibold text-green-400 mb-3">
-                HOLDER STATUS: <span className="text-yellow-300">ACTIVE</span>
-              </p>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <XpIcon className="w-5 h-5 text-green-400" />
-                  <span>+100% XP Bonus</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <GoldIcon className="w-5 h-5 text-yellow-400" />
-                  <span>+100% Gold Bonus</span>
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                {player.reptilianzNFTs && player.reptilianzNFTs.length > 0 && (
+                  <img
+                    src={player.reptilianzNFTs[0].image}
+                    alt="Reptilianz NFT"
+                    className="w-16 h-16 rounded-lg border-2 border-yellow-400"
+                  />
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-green-400 mb-3">
+                  HOLDER STATUS: <span className="text-yellow-300">ACTIVE</span>
+                </p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <XpIcon className="w-5 h-5 text-green-400" />
+                    <span>+100% XP Bonus</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <GoldIcon className="w-5 h-5 text-yellow-400" />
+                    <span>+100% Gold Bonus</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -109,6 +118,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </p>
             </div>
           )}
+          {/* Dev NFT toggle button commented out
           {isDevMode && player.isWalletConnected && (
             <StyledButton
               onClick={onToggleNFT}
@@ -118,6 +128,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               (Dev) Toggle NFT Status
             </StyledButton>
           )}
+          */}
         </StatusCard>
 
         <StatusCard title="Recovery String">

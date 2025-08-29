@@ -3,7 +3,7 @@ import { HomunculusTrait } from "../../types";
 
 // Helper function for scaling mission durations for this massive list
 const createDurations = (baseXp: number, baseGold: number) => ({
-  SHORT: { seconds: 1, baseXp: baseXp, baseGold: baseGold }, // Changed from 30 to 1 for testing
+  SHORT: { seconds: 30, baseXp: baseXp, baseGold: baseGold },
   MEDIUM: {
     seconds: 1800,
     baseXp: Math.round(baseXp * 10),

@@ -1,7 +1,7 @@
 import express from "express";
 import {
   getPlayer,
-  resetPlayer,
+  // resetPlayer, // Dev function commented out for safety
   updateTutorialStep,
   equipItem,
   unequipItem,
@@ -12,7 +12,8 @@ import { playerMiddleware } from "../middleware/playerMiddleware";
 const router = express.Router();
 
 router.get("/", playerMiddleware, getPlayer);
-router.post("/reset", playerMiddleware, resetPlayer);
+// Dev endpoint commented out for safety
+// router.post("/reset", playerMiddleware, resetPlayer);
 router.post("/tutorial", playerMiddleware, updateTutorialStep);
 router.post("/equip", playerMiddleware, equipItem);
 router.post("/unequip", playerMiddleware, unequipItem);

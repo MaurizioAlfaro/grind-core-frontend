@@ -254,7 +254,7 @@ const App: React.FC = () => {
             onFightBoss={actions.fightBoss}
             onShowLore={openBossLoreModal}
             onShowRewards={openBossRewardsModal}
-            isDevMode={isDevMode}
+            isDevMode={false}
           />
         );
       case "collection":
@@ -331,7 +331,7 @@ const App: React.FC = () => {
               walletAuthService.clearAuth();
               window.location.reload(); // Simple way to reset the app state
             }}
-            isDevMode={isDevMode}
+            isDevMode={false}
           />
         );
       default:
@@ -352,11 +352,14 @@ const App: React.FC = () => {
       {tutorialConfig && (
         <Tutorial config={tutorialConfig} onNext={actions.advanceTutorial} />
       )}
+      {/* Tutorial step display commented out
       {isDevMode && tutorialConfig && (
         <div className="fixed top-2 left-2 z-[10000] bg-gray-900/80 p-2 rounded-lg border border-red-500/50 backdrop-blur-sm text-red-300 text-xs font-mono">
           Tutorial Step: {tutorialConfig.step} / 39
         </div>
       )}
+      */}
+      {/* Dev mode toggle and modal commented out
       <div className="fixed top-2 right-2 z-50 flex flex-col items-end gap-2">
         <div className="bg-gray-900/80 p-2 rounded-lg border border-yellow-500/50 backdrop-blur-sm">
           <label className="flex items-center gap-2 text-yellow-300 text-xs cursor-pointer select-none">
@@ -387,6 +390,7 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
+      */}
 
       <div className="max-w-xl mx-auto flex flex-col min-h-screen">
         {isInitialBoostModalOpen && (
@@ -540,14 +544,6 @@ const App: React.FC = () => {
               >
                 <CasinoIcon />
                 <span>🎰 Casino</span>
-              </button>
-
-              <button
-                onClick={actions.showWalletConnectPrompt}
-                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <span>🔗</span>
-                <span>Connect Wallet</span>
               </button>
             </div>
 

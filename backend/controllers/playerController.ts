@@ -5,12 +5,14 @@ import {
   unlockZone as unlockZoneLogic,
   recalculatePower,
 } from "../logic";
-import { DEV_PLAYER_STATES } from "../../constants/index";
+// import { DEV_PLAYER_STATES } from "../../constants/index"; // Dev import commented out for safety
 
 export const getPlayer = asyncHandler(async (req: any, res: any) => {
   res.status(200).json(req.player.toObject());
 });
 
+// Dev function commented out for safety
+/*
 export const resetPlayer = asyncHandler(async (req: any, res: any) => {
   const { modeIndex } = req.body;
   const playerDoc = req.player;
@@ -31,6 +33,7 @@ export const resetPlayer = asyncHandler(async (req: any, res: any) => {
 
   res.status(200).json(playerDoc.toObject());
 });
+*/
 
 export const updateTutorialStep = asyncHandler(async (req: any, res: any) => {
   const { tutorialStep, tutorialCompleted } = req.body;
