@@ -128,6 +128,55 @@
         animation: attribute-unlock-glow 1.5s ease-out;
       }
 
+      /* Fade in/out animations for loading */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+      .animate-fade-in {
+        animation: fadeIn 600ms ease-out forwards;
+      }
+      .animate-fade-out {
+        animation: fadeOut 600ms ease-in forwards;
+      }
+
+      /* Reptilianz Landing Page CSS classes */
+      .font-display {
+        font-family: "Press Start 2P", cursive;
+      }
+      .text-shadow-neon-cyan {
+        text-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4, 0 0 20px #06b6d4,
+          0 0 40px #0891b2;
+      }
+      .text-shadow-neon-fuchsia {
+        text-shadow: 0 0 5px #d946ef, 0 0 10px #d946ef, 0 0 20px #c026d3,
+          0 0 40px #a21caf;
+      }
+      .text-shadow-neon-lime {
+        text-shadow: 0 0 5px #84cc16, 0 0 10px #84cc16, 0 0 20px #a3e635,
+          0 0 40px #bef264;
+      }
+      .box-shadow-neon-cyan {
+        box-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4, 0 0 20px #0891b2,
+          0 0 40px #0e7490;
+      }
+      .box-shadow-neon-fuchsia {
+        box-shadow: 0 0 5px #d946ef, 0 0 10px #d946ef, 0 0 20px #c026d3,
+          0 0 40px #a21caf;
+      }
+
       /* Casino-specific CSS classes */
       .bg-felt-green {
         background-color: #0f5132;

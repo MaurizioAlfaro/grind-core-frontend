@@ -1,0 +1,28 @@
+{
+  "name": "reptilianz-coming-soon",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Minimal coming soon page for Reptilianz with a glitching countdown.",
+  "author": "Maurizio Alfaro",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaurizioAlfaro/reptilianz-coming-soon.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "@google/genai": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
