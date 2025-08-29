@@ -1,5 +1,3 @@
-import { apiService } from "./apiService";
-
 export interface WalletAuthResponse {
   token: string;
   player: {
