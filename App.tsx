@@ -182,7 +182,7 @@ const App: React.FC = () => {
 
     if (targetView === "bosses" && !isBossesUnlocked) {
       isLocked = true;
-      lockMessage = "Get to the fifth area";
+      lockMessage = "BOSSES Locked";
     }
 
     return (
@@ -596,6 +596,7 @@ const App: React.FC = () => {
           }
           onContinueWithWalletData={() => actions.continueWithWalletData()}
           walletPlayerData={walletChoiceModal.walletPlayerData}
+          localPlayerData={gameState.player}
           isLoading={false}
         />
       </div>

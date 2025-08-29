@@ -19,6 +19,7 @@ export const startMissionController = asyncHandler(
     });
 
     player.activeBoosts = activeBoosts;
+    req.player.activeBoosts = activeBoosts;
 
     const result = startMission(player, zoneId, durationKey, isDevMode);
 

@@ -63,6 +63,16 @@ export const useGameLoop = () => {
   const [globalBossTimer, setGlobalBossTimer] = useState<number>(0);
   const [lastMessage, setLastMessage] = useState<string | null>(null);
   const [modalContent, setModalContent] = useState<ModalContent | null>(null);
+
+  // Auto-clear lastMessage after 1 second
+  useEffect(() => {
+    if (lastMessage) {
+      const timer = setTimeout(() => {
+        setLastMessage(null);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [lastMessage]);
   const [rewardsInfoModalZoneId, setRewardsInfoModalZoneId] = useState<
     string | null
   >(null);

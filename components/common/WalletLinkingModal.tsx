@@ -11,6 +11,12 @@ interface WalletLinkingModalProps {
     xp: number;
     power: number;
   };
+  localPlayerData: {
+    level: number;
+    gold: number;
+    xp: number;
+    power: number;
+  };
   isLoading?: boolean;
 }
 
@@ -20,38 +26,75 @@ export const WalletLinkingModal: React.FC<WalletLinkingModalProps> = ({
   onKeepLocalData,
   onContinueWithWalletData,
   walletPlayerData,
+  localPlayerData,
   isLoading = false,
 }) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">
+      <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-600">
+        <h2 className="text-xl font-bold mb-4 text-yellow-300">
           Wallet Account Found! 🎯
         </h2>
 
         <div className="mb-6">
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-300 mb-4">
             We found an existing account associated with this wallet:
           </p>
 
-          <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-            <div className="flex justify-between">
-              <span className="font-medium">Level:</span>
-              <span className="text-blue-600">{walletPlayerData.level}</span>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-700 rounded-lg p-3 space-y-2">
+              <div className="text-center text-sm text-gray-400 mb-2">
+                Local Copy
+              </div>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>L:</span>
+                  <span className="text-blue-400">{localPlayerData.level}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>G:</span>
+                  <span className="text-yellow-400">
+                    {localPlayerData.gold}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>XP:</span>
+                  <span className="text-green-400">{localPlayerData.xp}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>P:</span>
+                  <span className="text-red-400">{localPlayerData.power}</span>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="font-medium">Gold:</span>
-              <span className="text-yellow-600">{walletPlayerData.gold}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium">XP:</span>
-              <span className="text-green-600">{walletPlayerData.xp}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium">Power:</span>
-              <span className="text-red-600">{walletPlayerData.power}</span>
+            <div className="bg-gray-700 rounded-lg p-3 space-y-2">
+              <div className="text-center text-sm text-gray-400 mb-2">
+                Remote Copy
+              </div>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>L:</span>
+                  <span className="text-blue-400">
+                    {walletPlayerData.level}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>G:</span>
+                  <span className="text-yellow-400">
+                    {walletPlayerData.gold}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>XP:</span>
+                  <span className="text-green-400">{walletPlayerData.xp}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>P:</span>
+                  <span className="text-red-400">{walletPlayerData.power}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
