@@ -36,6 +36,7 @@ import { SettingsView } from "./features/settings/SettingsView";
 import { BuffInfoModal } from "./components/common/BuffInfoModal";
 import { WalletLinkingModal } from "./components/common/WalletLinkingModal";
 import { ConnectWalletModal } from "./components/common/ConnectWalletModal";
+import { WelcomeModal } from "./components/common/WelcomeModal";
 import { Tutorial } from "./features/tutorial/Tutorial";
 import { ServerErrorModal } from "./components/common/ServerErrorModal";
 import CasinoView from "./components/casino/CasinoView";
@@ -78,6 +79,7 @@ const GrindCoreApp: React.FC = () => {
     resetConfirmation,
     isInitialBoostModalOpen,
     isConnectWalletModalOpen,
+    isWelcomeModalOpen,
     walletChoiceModal,
     pendingMissionRewards,
     showCasino,
@@ -356,6 +358,10 @@ const GrindCoreApp: React.FC = () => {
       <div className="max-w-xl mx-auto flex flex-col min-h-screen">
         {isInitialBoostModalOpen && (
           <InitialBoostModal onClose={actions.closeInitialBoostModal} />
+        )}
+
+        {isWelcomeModalOpen && (
+          <WelcomeModal onClose={actions.closeWelcomeModal} />
         )}
 
         {isConnectWalletModalOpen && (

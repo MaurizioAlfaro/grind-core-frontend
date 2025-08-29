@@ -110,6 +110,7 @@ export const useGameLoop = () => {
   const [isInitialBoostModalOpen, setIsInitialBoostModalOpen] = useState(false);
   const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] =
     useState(false);
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false);
 
   const [pendingMissionRewards, setPendingMissionRewards] =
     useState<Rewards | null>(null);
@@ -167,6 +168,11 @@ export const useGameLoop = () => {
           setIsInitialized(true);
           setIsLoading(false);
 
+          // Check if player has 0 XP and 0 gold to show welcome modal
+          if (playerState.xp === 0 && playerState.gold === 0) {
+            setIsWelcomeModalOpen(true);
+          }
+
           // BACKGROUND REFRESH: Fetch fresh data from server
           try {
             const freshPlayerState = await apiService.getPlayer();
@@ -206,6 +212,11 @@ export const useGameLoop = () => {
           : null;
         setGameState({ player: playerState, activeMission });
         setIsInitialized(true);
+
+        // Check if player has 0 XP and 0 gold to show welcome modal
+        if (playerState.xp === 0 && playerState.gold === 0) {
+          setIsWelcomeModalOpen(true);
+        }
       } catch (error) {
         console.error("Failed to load game from server:", error);
         // You might want to show an error screen here
@@ -227,6 +238,11 @@ export const useGameLoop = () => {
       setGameState({ player, activeMission });
       setIsInitialized(true);
       setIsLoading(false);
+
+      // Check if player has 0 XP and 0 gold to show welcome modal
+      if (player.xp === 0 && player.gold === 0) {
+        setIsWelcomeModalOpen(true);
+      }
     };
 
     window.addEventListener(
@@ -1527,6 +1543,9 @@ export const useGameLoop = () => {
         }, 300);
       }
     },
+    closeWelcomeModal: () => {
+      setIsWelcomeModalOpen(false);
+    },
     // Show wallet connect modal for all players
     showWalletConnectPrompt: () => {
       console.log(
@@ -1873,6 +1892,7 @@ export const useGameLoop = () => {
       resetConfirmation,
       isInitialBoostModalOpen,
       isConnectWalletModalOpen,
+      isWelcomeModalOpen,
       walletChoiceModal,
       pendingMissionRewards,
       showCasino,
@@ -1911,6 +1931,7 @@ export const useGameLoop = () => {
     resetConfirmation,
     isInitialBoostModalOpen,
     isConnectWalletModalOpen,
+    isWelcomeModalOpen,
     walletChoiceModal,
     pendingMissionRewards,
     showCasino,
