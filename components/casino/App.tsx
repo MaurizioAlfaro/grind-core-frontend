@@ -9,21 +9,32 @@ const GameTab: React.FC<{
   title: string;
   isActive: boolean;
   onClick: () => void;
-}> = ({ title, isActive, onClick }) => (
+  isLocked?: boolean;
+  requiredLevel?: number;
+}> = ({ title, isActive, onClick, isLocked, requiredLevel }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-2 md:px-6 md:py-3 text-lg md:text-xl font-bold rounded-t-lg transition-colors focus:outline-none
+    disabled={isLocked}
+    className={`px-4 py-2 md:px-6 md:py-3 text-lg md:text-xl font-bold rounded-t-lg transition-colors focus:outline-none relative
             ${
               isActive
                 ? "bg-dark-felt text-yellow-300"
+                : isLocked
+                ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                 : "bg-black/30 text-white hover:bg-black/50"
             }`}
   >
     {title}
+    {isLocked && (
+      <div className="absolute -top-2 -right-2 flex flex-col items-center text-xs">
+        <span className="text-gray-400">🔒</span>
+        <span className="text-gray-400">LVL {requiredLevel}</span>
+      </div>
+    )}
   </button>
 );
 
-const App: React.FC = () => {
+const App: React.FC<{ playerLevel: number }> = ({ playerLevel }) => {
   const [activeGame, setActiveGame] = useState<
     "blackjack" | "baccarat" | "roulette" | "chat"
   >("blackjack");
@@ -41,11 +52,15 @@ const App: React.FC = () => {
             title="Baccarat"
             isActive={activeGame === "baccarat"}
             onClick={() => setActiveGame("baccarat")}
+            isLocked={playerLevel < 10}
+            requiredLevel={10}
           />
           <GameTab
             title="Roulette"
             isActive={activeGame === "roulette"}
             onClick={() => setActiveGame("roulette")}
+            isLocked={playerLevel < 20}
+            requiredLevel={20}
           />
           <GameTab
             title="Chat"

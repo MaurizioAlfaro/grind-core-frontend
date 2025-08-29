@@ -526,7 +526,12 @@ const App: React.FC = () => {
         )}
 
         {/* Casino Modal */}
-        {showCasino && <CasinoView onClose={actions.closeCasino} />}
+        {showCasino && (
+          <CasinoView
+            onClose={actions.closeCasino}
+            playerLevel={gameState.player.level}
+          />
+        )}
 
         <header className="p-4 pt-12 sticky top-0 bg-gray-900 z-20">
           <div className="relative bg-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-700 shadow-lg p-4 space-y-4">
