@@ -1,0 +1,443 @@
+/* Casino Suite CSS - Comprehensive Styles for All Casino Games */
+
+/* ===== BASE COLORS ===== */
+:root {
+  --felt-green: #35654d;
+  --dark-felt: #2a503e;
+  --card-white: #f8f8f8;
+  --chip-red: #d9534f;
+  --chip-blue: #428bca;
+  --chip-green: #5cb85c;
+  --chip-black: #373a3c;
+  --roulette-red: #d32f2f;
+  --roulette-black: #1e1e1e;
+  --roulette-green: #4caf50;
+}
+
+/* ===== CARD FLIPPER ANIMATIONS ===== */
+.card-flipper-container {
+  perspective: 1000px;
+}
+
+.card-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-flipper.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 0.5rem;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* ===== SHADOWS ===== */
+.shadow-card {
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.shadow-chip {
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.3),
+    0 2px 2px rgba(255, 255, 255, 0.4);
+}
+
+/* ===== DEALING ANIMATIONS ===== */
+@keyframes deal-player {
+  from {
+    transform: translateY(-250%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes deal-dealer {
+  from {
+    transform: translateY(250%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-deal-player {
+  animation: deal-player 0.5s forwards cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.animate-deal-dealer {
+  animation: deal-dealer 0.5s forwards cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ===== BET CHIP ANIMATIONS ===== */
+.bet-chip {
+  position: absolute;
+  transition: transform 0.3s ease-out;
+}
+
+@keyframes chip-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+  }
+}
+
+.animate-chip-bounce {
+  animation: chip-bounce 0.6s ease-in-out;
+}
+
+/* ===== ROULETTE WHEEL ANIMATIONS ===== */
+@keyframes spinWheel {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(3600deg);
+  }
+}
+
+.roulette-wheel-spin {
+  transition: transform 8s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.roulette-ball-spin {
+  transition: transform 8s cubic-bezier(0.4, 0, 0.1, 1);
+}
+
+/* ===== BLACKJACK PEEK ANIMATION ===== */
+@keyframes peek-card {
+  0% {
+    transform: translate(0, 0) rotate(0);
+    z-index: 20;
+  }
+  30% {
+    transform: translate(-25px, 25px) rotate(-10deg);
+    z-index: 20;
+  }
+  70% {
+    transform: translate(-25px, 25px) rotate(-10deg);
+    z-index: 20;
+  }
+  100% {
+    transform: translate(0, 0) rotate(0);
+    z-index: 20;
+  }
+}
+
+.animate-peek {
+  animation: peek-card 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== MESSAGE ANIMATIONS ===== */
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+.animate-fade-out {
+  animation: fade-out 1s forwards;
+  animation-delay: 1.5s; /* Keep message on screen */
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s forwards cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== SLIDE ANIMATIONS ===== */
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s ease-out;
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s ease-out;
+}
+.animate-slide-in-up {
+  animation: slide-in-up 0.5s ease-out;
+}
+.animate-slide-in-down {
+  animation: slide-in-down 0.5s ease-out;
+}
+
+/* ===== PULSE ANIMATIONS ===== */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor,
+      0 0 15px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor,
+      0 0 30px currentColor;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* ===== SHAKE ANIMATIONS ===== */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* ===== BOUNCE ANIMATIONS ===== */
+@keyframes bounce {
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40%,
+  43% {
+    transform: translateY(-30px);
+  }
+  70% {
+    transform: translateY(-15px);
+  }
+  90% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s ease-in-out;
+}
+
+/* ===== SPIN ANIMATIONS ===== */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ===== FLIP ANIMATIONS ===== */
+@keyframes flip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+.animate-flip {
+  animation: flip 0.6s ease-in-out;
+}
+
+/* ===== SCALE ANIMATIONS ===== */
+@keyframes scale-in {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out;
+}
+.animate-scale-out {
+  animation: scale-out 0.3s ease-in;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.bg-felt-green {
+  background-color: var(--felt-green);
+}
+.bg-dark-felt {
+  background-color: var(--dark-felt);
+}
+.bg-card-white {
+  background-color: var(--card-white);
+}
+.bg-chip-red {
+  background-color: var(--chip-red);
+}
+.bg-chip-blue {
+  background-color: var(--chip-blue);
+}
+.bg-chip-green {
+  background-color: var(--chip-green);
+}
+.bg-chip-black {
+  background-color: var(--chip-black);
+}
+.bg-roulette-red {
+  background-color: var(--roulette-red);
+}
+.bg-roulette-black {
+  background-color: var(--roulette-black);
+}
+.bg-roulette-green {
+  background-color: var(--roulette-green);
+}
+
+/* ===== RESPONSIVE UTILITIES ===== */
+@media (max-width: 640px) {
+  .card-flipper-container {
+    perspective: 500px;
+  }
+  .card-flipper {
+    transition: transform 0.4s;
+  }
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+.card-flipper,
+.card-face,
+.bet-chip {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .card-flipper,
+  .animate-deal-player,
+  .animate-deal-dealer,
+  .animate-peek,
+  .animate-chip-bounce,
+  .roulette-wheel-spin,
+  .roulette-ball-spin {
+    animation: none;
+    transition: none;
+  }
+}
