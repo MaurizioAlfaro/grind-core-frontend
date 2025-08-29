@@ -501,7 +501,7 @@ const GrindCoreApp: React.FC = () => {
           />
         )}
 
-        <header className="p-4 pt-12 sticky top-0 bg-gray-900 z-20">
+        <header className="p-4 pt-0 sticky top-0 bg-gray-900 z-20">
           <div className="relative bg-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-700 shadow-lg p-4">
             <PlayerStats
               player={gameState.player}
