@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone17: Zone = {
     id: 'cloning_facility',
     name: 'Cloning Facility',
-    image: '/assets/images/missions-backgrounds/Cloning Facility.jpeg',
+    image: '/assets/images/missions-backgrounds/Cloning Facility.png',
     lore: "Deep inside Area 69, I find this. A cloning facility. They aren't just controlling world leaders; they are replacing them. The implications are staggering. I must destroy their genetic archives.",
     requiredPower: 1000,
     missionDurations: createDurations(450, 225),

@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone24: Zone = {
     id: 'atlantis_farwaters',
     name: 'Atlantis Farwaters',
-    image: '/assets/images/missions-backgrounds/Atlantis Farwaters?.jpeg',
+    image: '/assets/images/missions-backgrounds/Atlantis Farwaters?.png',
     lore: "The Moon Temple contained a portal. It led me here, to the depths of Earth's ocean, to a city that is supposed to be a myth. Atlantis. The architecture is reptilian. This was one of our ancient capitals before the Great Betrayal.",
     requiredPower: 10000,
     missionDurations: createDurations(2500, 1250),

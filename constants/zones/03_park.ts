@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone03: Zone = {
     id: 'park',
     name: 'Public Park',
-    image: '/assets/images/missions-backgrounds/Getting High at the Park.jpeg',
+    image: '/assets/images/missions-backgrounds/Getting High at the Park.png',
     lore: "The humans 'relax' here, lowering their guard. I sit on a bench, disguised, monitoring their conversations. They speak of trivialities, unaware of the psychic net the Order has cast over them. A rogue agent has hidden a data cache near the duck pond.",
     requiredPower: 20,
     missionDurations: createDurations(20, 10),

@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone26: Zone = {
     id: 'dark_throne',
     name: 'The Dark Throne',
-    image: '/assets/images/missions-backgrounds/Dark Throne.jpeg',
+    image: '/assets/images/missions-backgrounds/Dark Throne.png',
     lore: "At the heart of the pyramid network sits the Dark Throne, the seat of the Order's terrestrial leader. He is ancient, powerful, and not human. He is one of the traitors from the First War. It is time to reclaim our birthright.",
     requiredPower: 22000,
     missionDurations: createDurations(4000, 2000),

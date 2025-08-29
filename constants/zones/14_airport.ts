@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone14: Zone = {
     id: 'airport',
     name: 'Airport',
-    image: '/assets/images/missions-backgrounds/Airport.jpeg',
+    image: '/assets/images/missions-backgrounds/Airport.png',
     lore: "With the broadcast averted, the regional director is fleeing. I must intercept him at the airport. He's disguised as a tourist, but he carries a briefcase containing a list of all resistance members. I cannot let that plane take off.",
     requiredPower: 500,
     missionDurations: createDurations(220, 110),

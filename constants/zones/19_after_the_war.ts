@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone19: Zone = {
     id: 'after_the_war',
     name: 'After the War',
-    image: '/assets/images/missions-backgrounds/After the War.jpeg',
+    image: '/assets/images/missions-backgrounds/After the War.png',
     lore: "The truth is out. Chaos reigns. The Order is fractured, but not destroyed. The world is in ruins, but it's free. My mission is complete... or so I thought. A signal from the stars tells me the fight has just begun.",
     requiredPower: 2000,
     missionDurations: createDurations(800, 400),

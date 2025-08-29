@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone07: Zone = {
     id: 'school_entrance',
     name: 'School Entrance',
-    image: '/assets/images/missions-backgrounds/School Entrance.jpeg',
+    image: '/assets/images/missions-backgrounds/School Entrance.png',
     lore: "The indoctrination begins early. I monitor the 'school' where they shape young minds. The curriculum is riddled with subliminal messages from the Order. A teacher here is a contact for the resistance. I must pass them a message.",
     requiredPower: 90,
     missionDurations: createDurations(50, 25),

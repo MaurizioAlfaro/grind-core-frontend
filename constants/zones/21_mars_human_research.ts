@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone21: Zone = {
     id: 'mars_human_research',
     name: 'Mars Human Research',
-    image: '/assets/images/missions-backgrounds/Mars\' Human Research.jpeg',
+    image: '/assets/images/missions-backgrounds/Mars\' Human Research.png',
     lore: "They weren't just hiding. They were experimenting. This facility is dedicated to creating a new breed of human, one loyal to the Order from birth. It's a perversion of life. This lab cannot be allowed to stand.",
     requiredPower: 3500,
     missionDurations: createDurations(1250, 625),

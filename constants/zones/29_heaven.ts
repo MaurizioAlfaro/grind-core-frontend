@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone29: Zone = {
     id: 'heaven',
     name: 'So-called Heaven',
-    image: '/assets/images/missions-backgrounds/Heaven.jpeg',
+    image: '/assets/images/missions-backgrounds/Heaven.png',
     lore: "I've breached the highest plane. This isn't a realm of angels, it's the server room of the universe. The beings here, the 'Architects', view our entire existence as a simulation. The Order were merely their system admins. It is time for a hard reboot.",
     requiredPower: 75000,
     missionDurations: createDurations(8000, 4000),

@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone13: Zone = {
     id: 'operations_center',
     name: 'Operations Center',
-    image: '/assets/images/missions-backgrounds/Operations Center.jpeg',
+    image: '/assets/images/missions-backgrounds/Operations Center.png',
     lore: "Inside the bunker, the 'Operations Center' buzzes with activity. They are coordinating a global psychic event to reinforce their control. I must sabotage the broadcast before it begins. Their security is high, but their arrogance is higher.",
     requiredPower: 400,
     missionDurations: createDurations(180, 90),

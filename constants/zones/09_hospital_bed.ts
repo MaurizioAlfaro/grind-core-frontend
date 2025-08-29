@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone09: Zone = {
     id: 'hospital_bed',
     name: 'Hospital Bed',
-    image: '/assets/images/missions-backgrounds/Hospital Bed.jpeg',
+    image: '/assets/images/missions-backgrounds/Hospital Bed.png',
     lore: "My cover was nearly blown. A 'workplace accident'. Now I'm in their 'hospital', a place of healing and biological data theft. They are taking my vitals, my blood... I must escape before my reptilian physiology is discovered.",
     requiredPower: 150,
     missionDurations: createDurations(80, 40),

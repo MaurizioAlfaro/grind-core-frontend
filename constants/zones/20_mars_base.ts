@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone20: Zone = {
     id: 'mars_base',
     name: 'Mars\' Base',
-    image: '/assets/images/missions-backgrounds/Mars\' Base.jpeg',
+    image: '/assets/images/missions-backgrounds/Mars\' Base.png',
     lore: "The signal leads here. Mars. The Order had an entire off-world base, a contingency plan. They are regrouping, preparing a counter-invasion. I cannot let them return. I must dismantle their Martian operations.",
     requiredPower: 2800,
     missionDurations: createDurations(1000, 500),

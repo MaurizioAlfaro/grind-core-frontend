@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone16: Zone = {
     id: 'area_69',
     name: 'Area 69',
-    image: '/assets/images/missions-backgrounds/Area 69.jpeg',
+    image: '/assets/images/missions-backgrounds/Area 69.png',
     lore: "The director's briefcase revealed the location of their primary research facility: Area 69. It's exactly what the human conspiracy theorists imagined, and worse. I'm going in deep to uncover the truth of their origins.",
     requiredPower: 800,
     missionDurations: createDurations(350, 175),

@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone15: Zone = {
     id: 'pilot_cabin',
     name: 'Pilot Cabin',
-    image: '/assets/images/missions-backgrounds/pilot cabin.jpeg',
+    image: '/assets/images/missions-backgrounds/pilot cabin.png',
     lore: "I'm on the plane. The director is in first class, but the pilots are Order members. I must take control of the aircraft and divert it to a resistance-controlled location. The view is nice, but the company is terrible.",
     requiredPower: 650,
     missionDurations: createDurations(270, 135),

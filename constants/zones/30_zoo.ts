@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone30: Zone = {
     id: 'zoo',
     name: 'The Zoo',
-    image: '/assets/images/missions-backgrounds/Zoo.jpeg',
+    image: '/assets/images/missions-backgrounds/Zoo.png',
     lore: "After rebooting reality, I find myself in a 'Zoo'. They have specimens of my kind in cages. They call us 'exhibits'. This indignity will not stand. I will liberate my brethren and remind these humans who the real animals are.",
     requiredPower: 85000,
     missionDurations: createDurations(8500, 4250),
