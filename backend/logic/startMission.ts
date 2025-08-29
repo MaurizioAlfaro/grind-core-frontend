@@ -16,19 +16,6 @@ export const startMission = (
   durationKey: MissionDurationKey,
   isDevMode: boolean
 ): { success: boolean; message: string; activeMission?: ActiveMission } => {
-  console.log(
-    "🔍 [startMission] Input playerState.activeBoosts:",
-    JSON.stringify(playerState.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [startMission] Input playerState.activeBoosts type:",
-    typeof playerState.activeBoosts
-  );
-  console.log(
-    "🔍 [startMission] Input playerState.activeBoosts isArray:",
-    Array.isArray(playerState.activeBoosts)
-  );
-
   const zone = ZONES.find((z) => z.id === zoneId);
   if (!zone) {
     return { success: false, message: "Zone not found." };
@@ -56,11 +43,6 @@ export const startMission = (
   playerState.activeBoosts.forEach((b) => {
     if (b.boostType === "speed") speedMultiplier *= b.value;
   });
-
-  console.log(
-    "🔍 [startMission] Calculated speedMultiplier from activeBoosts:",
-    speedMultiplier
-  );
 
   // Apply mission speed from enchantments
   if (playerState.equipmentEnchantments) {
@@ -113,12 +95,6 @@ export const startMission = (
   }
   // --- END TUTORIAL OVERRIDE ---
 
-  // Debug: Log the rewards being stored
-  console.log(
-    "🔍 [startMission] Rewards calculated and being stored:",
-    JSON.stringify(rewards, null, 2)
-  );
-
   const activeMission: ActiveMission = {
     zoneId,
     startTime: now,
@@ -126,12 +102,6 @@ export const startMission = (
     durationKey,
     preRolledRewards: rewards,
   };
-
-  // Debug: Log the activeMission being returned
-  console.log(
-    "🔍 [startMission] ActiveMission being returned:",
-    JSON.stringify(activeMission, null, 2)
-  );
 
   return { success: true, message: "Mission started!", activeMission };
 };

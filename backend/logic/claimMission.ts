@@ -15,23 +15,20 @@ export const claimMission = (
   playerState: PlayerState,
   activeMission: ActiveMission
 ): EngineResult<{ rewards?: Rewards; isInitialBoost?: boolean }> => {
-  console.log(
-    "🔍 [claimMission] Starting with playerState.activeBoosts:",
-    JSON.stringify(playerState.activeBoosts, null, 2)
-  );
-
   const now = clockService.getCurrentTime();
   if (now < activeMission.endTime) {
     return { success: false, message: "Mission not yet complete." };
   }
 
-  const rewards = activeMission.preRolledRewards;
-  let newPlayerState = applyRewards(playerState, rewards);
-
-  console.log(
-    "🔍 [claimMission] After applyRewards, activeBoosts:",
-    JSON.stringify(newPlayerState.activeBoosts, null, 2)
+  // Clean up expired boosts before calculating rewards
+  const activeBoosts = playerState.activeBoosts.filter(
+    (boost) => boost.endTime > now
   );
+
+  const cleanedPlayerState = { ...playerState, activeBoosts };
+
+  const rewards = activeMission.preRolledRewards;
+  let newPlayerState = applyRewards(cleanedPlayerState, rewards);
 
   // Reset consecutive cancels for "Leeroy Jenkins" badge
   newPlayerState.consecutiveCancels = 0;
@@ -46,7 +43,6 @@ export const claimMission = (
     newPlayerState.missionsCompleted === 3 &&
     !newPlayerState.hasReceivedInitialBoost
   ) {
-    console.log("🔍 [claimMission] Granting initial speed boost!");
     newPlayerState.hasReceivedInitialBoost = true;
     const speedBoost: ActiveBoost = {
       boostType: "speed",
@@ -54,15 +50,7 @@ export const claimMission = (
       endTime: now + 10 * 60 * 1000, // 10 minutes
       sourceId: "initial_boost",
     };
-    console.log(
-      "🔍 [claimMission] Created speedBoost:",
-      JSON.stringify(speedBoost, null, 2)
-    );
     newPlayerState.activeBoosts = [...newPlayerState.activeBoosts, speedBoost];
-    console.log(
-      "🔍 [claimMission] After adding speedBoost, activeBoosts:",
-      JSON.stringify(newPlayerState.activeBoosts, null, 2)
-    );
     isInitialBoost = true;
   }
 
@@ -97,45 +85,7 @@ export const claimMission = (
 
   newPlayerState.power = calculatePlayerPower(newPlayerState);
 
-  console.log(
-    "🔍 [claimMission] Before checkForBadgeUnlocks, activeBoosts:",
-    JSON.stringify(newPlayerState.activeBoosts, null, 2)
-  );
   const badgeCheckResult = checkForBadgeUnlocks(newPlayerState);
-  console.log(
-    "🔍 [claimMission] After checkForBadgeUnlocks, activeBoosts:",
-    JSON.stringify(badgeCheckResult.newPlayerState.activeBoosts, null, 2)
-  );
-
-  console.log(
-    "🔍 [claimMission] Final result.newPlayerState.activeBoosts:",
-    JSON.stringify(badgeCheckResult.newPlayerState.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [claimMission] Final result.newPlayerState.activeBoosts type:",
-    typeof badgeCheckResult.newPlayerState.activeBoosts
-  );
-  console.log(
-    "🔍 [claimMission] Final result.newPlayerState.activeBoosts isArray:",
-    Array.isArray(badgeCheckResult.newPlayerState.activeBoosts)
-  );
-
-  // Debug: Log the rewards being returned
-  console.log(
-    "🔍 [claimMission] Rewards being returned:",
-    JSON.stringify(rewards, null, 2)
-  );
-
-  // Check if activeBoosts got corrupted somewhere in the logic
-  if (typeof badgeCheckResult.newPlayerState.activeBoosts === "string") {
-    console.log(
-      "🔍 [claimMission] ERROR: activeBoosts is a string in the final result!"
-    );
-    console.log(
-      "🔍 [claimMission] String content:",
-      badgeCheckResult.newPlayerState.activeBoosts
-    );
-  }
 
   return {
     success: true,

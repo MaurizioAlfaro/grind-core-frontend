@@ -30,17 +30,6 @@ export const applyRewards = (
   ) {
     xpMultiplier = 2.0; // 100% bonus = 2x
     goldMultiplier = 2.0; // 100% bonus = 2x
-    console.log(
-      `🎭 [applyRewards] Reptilianz NFT holder detected! Applying 100% bonus to XP and Gold`
-    );
-    console.log(
-      `🎭 [applyRewards] XP: ${rewards.xp} → ${rewards.xp * xpMultiplier}`
-    );
-    console.log(
-      `🎭 [applyRewards] Gold: ${rewards.gold} → ${
-        rewards.gold * goldMultiplier
-      }`
-    );
   }
 
   newState.xp += rewards.xp * xpMultiplier;

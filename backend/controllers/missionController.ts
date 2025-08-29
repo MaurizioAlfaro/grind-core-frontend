@@ -13,6 +13,13 @@ export const startMissionController = asyncHandler(
     const { zoneId, durationKey, isDevMode } = req.body;
     const player = req.player.toObject();
 
+    // Clean up expired boosts before calculating rewards
+    const activeBoosts = player.activeBoosts.filter((boost) => {
+      return boost.endTime > Date.now();
+    });
+
+    player.activeBoosts = activeBoosts;
+
     const result = startMission(player, zoneId, durationKey, isDevMode);
 
     if (result.success && result.activeMission) {
@@ -107,7 +114,7 @@ export const claimMissionController = asyncHandler(
 
     const result = {
       success: true,
-      message: "Stupid Mission complete!",
+      message: "Mission complete!",
       newPlayerState: badgeCheckResult.newPlayerState,
       rewards,
       newlyUnlockedBadges: badgeCheckResult.newlyUnlockedBadges,
@@ -115,7 +122,6 @@ export const claimMissionController = asyncHandler(
     };
 
     const resultDeepCopy = JSON.parse(JSON.stringify(result));
-    console.log("🔍 [missionController.claimMission] Result:", result);
 
     if (result.success && result.newPlayerState) {
       Object.assign(playerDoc, {
@@ -123,10 +129,6 @@ export const claimMissionController = asyncHandler(
         activeMission: null,
       });
       await playerDoc.save();
-      console.log(
-        "🔍 [missionController.claimMission] Result Afer saving:",
-        resultDeepCopy
-      );
       res.status(200).json(resultDeepCopy);
     } else {
       res.status(400).json(resultDeepCopy);

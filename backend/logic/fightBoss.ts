@@ -68,10 +68,16 @@ export const fightBoss = (
     return { success: false, message: "Boss not found.", outcome: "loss" };
   }
 
-  let newPlayerState = { ...playerState };
+  // Clean up expired boosts before calculating power
+  const now = clockService.getCurrentTime();
+  const activeBoosts = playerState.activeBoosts.filter(
+    (boost) => boost.endTime > now
+  );
+  const cleanedPlayerState = { ...playerState, activeBoosts };
+
+  let newPlayerState = { ...cleanedPlayerState };
   const newlyUnlockedBadges: Badge[] = [];
 
-  const now = clockService.getCurrentTime();
   const cooldownEndTime = playerState.globalBossCooldownEndTime || 0;
 
   if (now < cooldownEndTime && !isDevMode) {

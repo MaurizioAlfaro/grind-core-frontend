@@ -17,47 +17,6 @@ export const applyRewards = (
   rewards: Rewards,
   options: ApplyRewardsOptions = {}
 ): PlayerState => {
-  console.log("🔍 [applyRewards] ITEMS constant loaded:", !!ITEMS);
-  console.log("🔍 [applyRewards] ITEMS constant type:", typeof ITEMS);
-  console.log(
-    "🔍 [applyRewards] ITEMS constant keys count:",
-    Object.keys(ITEMS).length
-  );
-  console.log(
-    "🔍 [applyRewards] ITEMS constant first few keys:",
-    Object.keys(ITEMS).slice(0, 10)
-  );
-
-  console.log(
-    "🔍 [applyRewards] Input rewards object:",
-    JSON.stringify(rewards, null, 2)
-  );
-  console.log(
-    "🔍 [applyRewards] Input rewards.items:",
-    JSON.stringify(rewards.items, null, 2)
-  );
-  console.log(
-    "🔍 [applyRewards] Input rewards.items type:",
-    typeof rewards.items
-  );
-  console.log(
-    "🔍 [applyRewards] Input rewards.items isArray:",
-    Array.isArray(rewards.items)
-  );
-
-  console.log(
-    "🔍 [applyRewards] Input playerState.activeBoosts:",
-    JSON.stringify(playerState.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [applyRewards] Input playerState.activeBoosts type:",
-    typeof playerState.activeBoosts
-  );
-  console.log(
-    "🔍 [applyRewards] Input playerState.activeBoosts isArray:",
-    Array.isArray(playerState.activeBoosts)
-  );
-
   let newState = { ...playerState };
 
   // 🎭 REPTILIANZ NFT BONUSES are already applied in backend preroll
@@ -70,46 +29,9 @@ export const applyRewards = (
   const newDiscoveredItems = [...newState.discoveredItemIds];
 
   rewards.items.forEach((rewardItem) => {
-    console.log("🔍 [applyRewards] Processing rewardItem:", rewardItem);
-    console.log("🔍 [applyRewards] rewardItem.itemId:", rewardItem.itemId);
-    console.log(
-      "🔍 [applyRewards] rewardItem.itemId type:",
-      typeof rewardItem.itemId
-    );
-    console.log("🔍 [applyRewards] ITEMS constant loaded:", !!ITEMS);
-    console.log("🔍 [applyRewards] ITEMS constant type:", typeof ITEMS);
-    console.log(
-      "🔍 [applyRewards] ITEMS constant keys count:",
-      Object.keys(ITEMS).length
-    );
-    console.log(
-      "🔍 [applyRewards] ITEMS constant first few keys:",
-      Object.keys(ITEMS).slice(0, 10)
-    );
-    console.log(
-      "🔍 [applyRewards] ITEMS has cafeteria_spork:",
-      "cafeteria_spork" in ITEMS
-    );
-    console.log(
-      "🔍 [applyRewards] ITEMS['cafeteria_spork']:",
-      ITEMS["cafeteria_spork"]
-    );
-
     const itemData = ITEMS[rewardItem.itemId];
-    console.log(
-      "🔍 [applyRewards] itemData for",
-      rewardItem.itemId,
-      ":",
-      itemData
-    );
+
     if (!itemData) {
-      console.log(
-        "🔍 [applyRewards] WARNING: itemData is undefined for itemId:",
-        rewardItem.itemId
-      );
-      console.log(
-        "🔍 [applyRewards] This itemId is not found in ITEMS constant"
-      );
       return;
     }
     if (!newDiscoveredItems.includes(rewardItem.itemId)) {
@@ -130,23 +52,9 @@ export const applyRewards = (
 
   // Handle stackable & consumable items immediately
   newState.inventory = newState.inventory.filter((invItem) => {
-    console.log("🔍 [applyRewards] Filtering inventory item:", invItem);
     const baseItem = ITEMS[invItem.itemId];
-    console.log(
-      "🔍 [applyRewards] baseItem for",
-      invItem.itemId,
-      ":",
-      baseItem
-    );
 
     if (!baseItem) {
-      console.log(
-        "🔍 [applyRewards] WARNING: baseItem is undefined for inventory item:",
-        invItem.itemId
-      );
-      console.log(
-        "🔍 [applyRewards] This inventory item is not found in ITEMS constant, keeping it in inventory"
-      );
       return true; // Keep items that don't exist in ITEMS constant
     }
 
@@ -186,19 +94,6 @@ export const applyRewards = (
   }
 
   newState.power = calculatePlayerPower(newState);
-
-  console.log(
-    "🔍 [applyRewards] Output newState.activeBoosts:",
-    JSON.stringify(newState.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [applyRewards] Output newState.activeBoosts type:",
-    typeof newState.activeBoosts
-  );
-  console.log(
-    "🔍 [applyRewards] Output newState.activeBoosts isArray:",
-    Array.isArray(newState.activeBoosts)
-  );
 
   return newState;
 };

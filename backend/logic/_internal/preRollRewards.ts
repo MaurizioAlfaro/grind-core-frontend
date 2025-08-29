@@ -23,31 +23,6 @@ export const preRollRewards = (
   zoneId: string,
   durationKey: MissionDurationKey
 ): Rewards => {
-  console.log(
-    "🔍 [preRollRewards] Starting with zoneId:",
-    zoneId,
-    "durationKey:",
-    durationKey
-  );
-  console.log("🔍 [preRollRewards] ITEMS constant loaded:", !!ITEMS);
-  console.log(
-    "🔍 [preRollRewards] ITEMS constant keys count:",
-    Object.keys(ITEMS).length
-  );
-
-  console.log(
-    "🔍 [preRollRewards] Input playerState.activeBoosts:",
-    JSON.stringify(playerState.activeBoosts, null, 2)
-  );
-  console.log(
-    "🔍 [preRollRewards] Input playerState.activeBoosts type:",
-    typeof playerState.activeBoosts
-  );
-  console.log(
-    "🔍 [preRollRewards] Input playerState.activeBoosts isArray:",
-    Array.isArray(playerState.activeBoosts)
-  );
-
   const zone = ZONES.find((z) => z.id === zoneId);
   if (!zone) {
     throw new Error(`Zone not found: ${zoneId}`);
@@ -129,15 +104,6 @@ export const preRollRewards = (
     if (buff.boostType === "gold") goldMultiplier *= buff.value;
     if (buff.boostType === "loot") lootMultiplier *= buff.value;
   });
-
-  console.log(
-    "🔍 [preRollRewards] After processing activeBoosts, xpMultiplier:",
-    xpMultiplier,
-    "goldMultiplier:",
-    goldMultiplier,
-    "lootMultiplier:",
-    lootMultiplier
-  );
 
   // Badges
   playerState.unlockedBadgeIds.forEach((badgeId) => {
