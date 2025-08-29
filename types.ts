@@ -304,6 +304,15 @@ export interface Homunculus {
   fedFoodIds?: string[];
 }
 
+// Reptilianz NFT interface for player ownership
+export interface ReptilianzNFT {
+  name: string;
+  tokenNumber: number;
+  json_uri: string;
+  image: string;
+  assetId: string;
+}
+
 export interface PlayerState {
   level: number;
   xp: number;
@@ -350,6 +359,8 @@ export interface PlayerState {
   hasSeenWalletConnectPrompt?: boolean;
   guestId?: string; // For guest accounts without wallet
   user?: string; // For guest accounts without wallet
+  // Reptilianz NFTs
+  reptilianzNFTs?: ReptilianzNFT[];
 
   // Global Attributes / Enchantments
   bossDefeatCounts?: { [bossId: string]: number };

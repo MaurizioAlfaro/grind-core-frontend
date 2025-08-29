@@ -5,6 +5,7 @@ import Player from "../models/playerModel";
 import { Recovery } from "../models/recoveryModel";
 
 import { recalculatePower } from "../logic/recalculatePower";
+import { fetchReptilianzNFTsByOwner } from "../helpers/fetchNFTsByOwner";
 import crypto from "crypto";
 
 interface AuthRequest extends Request {
@@ -98,6 +99,7 @@ export const authenticate = async (req: AuthRequest, res: Response) => {
         equipment: {},
         equipmentUpgrades: {},
         unlockedZoneIds: ["caffeteria"],
+        reptilianzNFTs: [],
         discoveredItemIds: [],
         completedZoneIds: [],
         completedLongMissionZoneIds: [],
@@ -133,10 +135,72 @@ export const authenticate = async (req: AuthRequest, res: Response) => {
       };
       const hydratedState = recalculatePower(initialState);
       player = await Player.create(hydratedState);
+
+      // Fetch NFTs for new wallet users
+      try {
+        console.log(
+          `🔍 Fetching Reptilianz NFTs for new wallet user: ${walletAddress}`
+        );
+        const reptilianzNFTs = await fetchReptilianzNFTsByOwner(walletAddress);
+
+        // Update player with NFT data
+        player.reptilianzNFTs = reptilianzNFTs;
+        player.ownsReptilianzNFT = reptilianzNFTs.length > 0;
+
+        console.log(
+          `✅ New user: Found ${reptilianzNFTs.length} Reptilianz NFTs for wallet ${walletAddress}`
+        );
+        if (reptilianzNFTs.length > 0) {
+          console.log(
+            `🎭 NFT Details:`,
+            reptilianzNFTs.map((nft) => `${nft.name} (#${nft.tokenNumber})`)
+          );
+        }
+
+        await player.save();
+      } catch (nftError) {
+        console.error(
+          `❌ Error fetching NFTs for new wallet user ${walletAddress}:`,
+          nftError
+        );
+        // Don't fail user creation - just set empty NFT data
+        player.reptilianzNFTs = [];
+        player.ownsReptilianzNFT = false;
+        await player.save();
+      }
     } else {
       // Update existing player
       player.isWalletConnected = true;
       player.hasSeenWalletConnectPrompt = true;
+
+      // ALWAYS refresh NFT data on authentication to ensure it's current
+      try {
+        console.log(
+          `🔍 Refreshing Reptilianz NFTs for existing wallet: ${walletAddress}`
+        );
+        const reptilianzNFTs = await fetchReptilianzNFTsByOwner(walletAddress);
+
+        // Update player with fresh NFT data
+        player.reptilianzNFTs = reptilianzNFTs;
+        player.ownsReptilianzNFT = reptilianzNFTs.length > 0;
+
+        console.log(
+          `✅ Refreshed: Found ${reptilianzNFTs.length} Reptilianz NFTs for wallet ${walletAddress}`
+        );
+        if (reptilianzNFTs.length > 0) {
+          console.log(
+            `🎭 NFT Details:`,
+            reptilianzNFTs.map((nft) => `${nft.name} (#${nft.tokenNumber})`)
+          );
+        }
+      } catch (nftError) {
+        console.error(
+          `❌ Error refreshing NFTs for wallet ${walletAddress}:`,
+          nftError
+        );
+        // Keep existing NFT data if refresh fails
+      }
+
       await player.save();
     }
 
@@ -217,6 +281,7 @@ export const createNewAccount = async (req: Request, res: Response) => {
       isWalletConnected: false,
       ownsReptilianzNFT: false,
       hasSeenWalletConnectPrompt: false,
+      reptilianzNFTs: [],
       guestId: playerId, // Add guest ID for tracking
       user: playerId,
     };
@@ -345,6 +410,35 @@ export const linkWallet = async (req: Request, res: Response) => {
     localPlayer.walletAddress = walletAddress;
     localPlayer.isWalletConnected = true;
     localPlayer.hasSeenWalletConnectPrompt = true;
+
+    // IMMEDIATELY fetch Reptilianz NFTs for this wallet
+    try {
+      console.log(`🔍 Fetching Reptilianz NFTs for wallet: ${walletAddress}`);
+      const reptilianzNFTs = await fetchReptilianzNFTsByOwner(walletAddress);
+
+      // Update player with NFT data
+      localPlayer.reptilianzNFTs = reptilianzNFTs;
+      localPlayer.ownsReptilianzNFT = reptilianzNFTs.length > 0;
+
+      console.log(
+        `✅ Found ${reptilianzNFTs.length} Reptilianz NFTs for wallet ${walletAddress}`
+      );
+      if (reptilianzNFTs.length > 0) {
+        console.log(
+          `🎭 NFT Details:`,
+          reptilianzNFTs.map((nft) => `${nft.name} (#${nft.tokenNumber})`)
+        );
+      }
+    } catch (nftError) {
+      console.error(
+        `❌ Error fetching NFTs for wallet ${walletAddress}:`,
+        nftError
+      );
+      // Don't fail the wallet linking - just set empty NFT data
+      localPlayer.reptilianzNFTs = [];
+      localPlayer.ownsReptilianzNFT = false;
+    }
+
     await localPlayer.save();
 
     // Generate new JWT with wallet address
@@ -365,6 +459,54 @@ export const linkWallet = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Wallet linking error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Refresh Reptilianz NFTs for an existing wallet
+export const refreshNFTs = async (req: Request, res: Response) => {
+  try {
+    const walletAddress = (req as any).walletAddress;
+
+    if (!walletAddress) {
+      res.status(401).json({ error: "Not authenticated" });
+      return;
+    }
+
+    const player = await Player.findOne({ walletAddress });
+    if (!player) {
+      res.status(404).json({ error: "Player not found" });
+      return;
+    }
+
+    console.log(
+      `🔍 Manually refreshing Reptilianz NFTs for wallet: ${walletAddress}`
+    );
+    const reptilianzNFTs = await fetchReptilianzNFTsByOwner(walletAddress);
+
+    // Update player with fresh NFT data
+    player.reptilianzNFTs = reptilianzNFTs;
+    player.ownsReptilianzNFT = reptilianzNFTs.length > 0;
+
+    await player.save();
+
+    console.log(
+      `✅ Manual refresh: Found ${reptilianzNFTs.length} Reptilianz NFTs for wallet ${walletAddress}`
+    );
+    if (reptilianzNFTs.length > 0) {
+      console.log(
+        `🎭 NFT Details:`,
+        reptilianzNFTs.map((nft) => `${nft.name} (#${nft.tokenNumber})`)
+      );
+    }
+
+    res.json({
+      success: true,
+      message: `Refreshed ${reptilianzNFTs.length} Reptilianz NFTs`,
+      player,
+    });
+  } catch (error) {
+    console.error("NFT refresh error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -390,6 +532,40 @@ export const authenticateWithRecovery = async (req: Request, res: Response) => {
     if (!player) {
       res.status(404).json({ error: "Player not found" });
       return;
+    }
+
+    // If player has a wallet, refresh NFT data
+    if (player.walletAddress) {
+      try {
+        console.log(
+          `🔍 Refreshing Reptilianz NFTs for recovery wallet: ${player.walletAddress}`
+        );
+        const reptilianzNFTs = await fetchReptilianzNFTsByOwner(
+          player.walletAddress
+        );
+
+        // Update player with NFT data
+        player.reptilianzNFTs = reptilianzNFTs;
+        player.ownsReptilianzNFT = reptilianzNFTs.length > 0;
+
+        console.log(
+          `✅ Recovery: Found ${reptilianzNFTs.length} Reptilianz NFTs for wallet ${player.walletAddress}`
+        );
+        if (reptilianzNFTs.length > 0) {
+          console.log(
+            `🎭 NFT Details:`,
+            reptilianzNFTs.map((nft) => `${nft.name} (#${nft.tokenNumber})`)
+          );
+        }
+
+        await player.save();
+      } catch (nftError) {
+        console.error(
+          `❌ Error refreshing NFTs for recovery wallet ${player.walletAddress}:`,
+          nftError
+        );
+        // Continue with existing NFT data if refresh fails
+      }
     }
 
     // Generate JWT token (30 days)

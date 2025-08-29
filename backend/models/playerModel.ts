@@ -81,6 +81,19 @@ const PlayerSchema = new mongoose.Schema(
     isWalletConnected: { type: Boolean, default: false },
     ownsReptilianzNFT: { type: Boolean, default: false },
     hasSeenWalletConnectPrompt: { type: Boolean, default: false },
+    reptilianzNFTs: {
+      type: [
+        {
+          _id: false,
+          name: String,
+          tokenNumber: Number,
+          json_uri: String,
+          image: String,
+          assetId: String,
+        },
+      ],
+      default: [],
+    },
     bossDefeatCounts: { type: Object, default: {} },
     dailySafeguardUses: { type: Object, default: {} },
     lastSafeguardUseTimestamp: { type: Number, default: 0 },
