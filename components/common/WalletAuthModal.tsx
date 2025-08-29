@@ -38,7 +38,7 @@ export const WalletAuthModal: React.FC<WalletAuthModalProps> = ({
 
       // Step 1: Request nonce from backend
       const nonceResponse = await fetch(
-        "http://localhost:5001/api/auth/nonce",
+        "https://grind-core-backend.onrender.com/api/auth/nonce",
         {
           method: "POST",
           headers: {
@@ -72,7 +72,7 @@ export const WalletAuthModal: React.FC<WalletAuthModalProps> = ({
       // Step 3: Verify signature with backend
       setCurrentStep("verifying");
       const authResponse = await fetch(
-        "http://localhost:5001/api/auth/authenticate",
+        "https://grind-core-backend.onrender.com/api/auth/authenticate",
         {
           method: "POST",
           headers: {

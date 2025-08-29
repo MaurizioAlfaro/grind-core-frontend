@@ -86,7 +86,7 @@ export const useAuthState = () => {
       // 3. Request nonce from backend
       console.log("🔄 Requesting nonce from backend...");
       const nonceResponse = await fetch(
-        "http://localhost:5001/api/auth/nonce",
+        "https://grind-core-backend.onrender.com/api/auth/nonce",
         {
           method: "POST",
           headers: {
@@ -118,7 +118,7 @@ export const useAuthState = () => {
       // 6. Authenticate with backend using signature
       console.log("🔄 Authenticating with backend...");
       const authResponse = await fetch(
-        "http://localhost:5001/api/auth/authenticate",
+        "https://grind-core-backend.onrender.com/api/auth/authenticate",
         {
           method: "POST",
           headers: {

@@ -1596,7 +1596,7 @@ export const useGameLoop = () => {
         // 3. Request nonce from backend
         console.log("🔄 Requesting nonce from backend...");
         const nonceResponse = await fetch(
-          "http://localhost:5001/api/auth/nonce",
+          "https://grind-core-backend.onrender.com/api/auth/nonce",
           {
             method: "POST",
             headers: {
@@ -1627,7 +1627,7 @@ export const useGameLoop = () => {
         // 6. Authenticate with backend using signature
         console.log("🔄 Authenticating with backend...");
         const authResponse = await fetch(
-          "http://localhost:5001/api/auth/authenticate",
+          "https://grind-core-backend.onrender.com/api/auth/authenticate",
           {
             method: "POST",
             headers: {
@@ -1751,7 +1751,7 @@ export const useGameLoop = () => {
 
         // Call the link-wallet endpoint
         const response = await fetch(
-          "http://localhost:5001/api/auth/link-wallet",
+          "https://grind-core-backend.onrender.com/api/auth/link-wallet",
           {
             method: "POST",
             headers: {

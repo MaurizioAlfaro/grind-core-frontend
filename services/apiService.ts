@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5001/api";
+const API_URL = "https://grind-core-backend.onrender.com/api";
 
 // Simple function to get auth headers directly from localStorage
 const getAuthHeaders = () => {

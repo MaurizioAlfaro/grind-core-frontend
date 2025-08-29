@@ -53,7 +53,7 @@ class WalletAuthService {
     documentId: string;
   }> {
     const response = await fetch(
-      "http://localhost:5001/api/auth/generate-recovery",
+      "https://grind-core-backend.onrender.com/api/auth/generate-recovery",
       {
         method: "POST",
         headers: this.getAuthHeaders(),
@@ -71,13 +71,16 @@ class WalletAuthService {
   async authenticateWithRecovery(
     recoveryString: string
   ): Promise<WalletAuthResponse> {
-    const response = await fetch("http://localhost:5001/api/auth/recovery", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ recoveryString }),
-    });
+    const response = await fetch(
+      "https://grind-core-backend.onrender.com/api/auth/recovery",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ recoveryString }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Invalid recovery string");
@@ -126,13 +129,16 @@ class WalletAuthService {
 
   // Get nonce from server
   async getNonce(walletAddress: string): Promise<NonceResponse> {
-    const response = await fetch("http://localhost:5001/api/auth/nonce", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ walletAddress }),
-    });
+    const response = await fetch(
+      "https://grind-core-backend.onrender.com/api/auth/nonce",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ walletAddress }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to get nonce");
@@ -148,7 +154,7 @@ class WalletAuthService {
     message: string
   ): Promise<WalletAuthResponse> {
     const response = await fetch(
-      "http://localhost:5001/api/auth/authenticate",
+      "https://grind-core-backend.onrender.com/api/auth/authenticate",
       {
         method: "POST",
         headers: {
@@ -175,12 +181,15 @@ class WalletAuthService {
 
   // Create new guest account
   async createNewAccount(): Promise<WalletAuthResponse> {
-    const response = await fetch("http://localhost:5001/api/auth/new-account", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://grind-core-backend.onrender.com/api/auth/new-account",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to create new account");
@@ -211,13 +220,16 @@ class WalletAuthService {
     }
 
     try {
-      await fetch("http://localhost:5001/api/auth/disconnect", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      await fetch(
+        "https://grind-core-backend.onrender.com/api/auth/disconnect",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
     } catch (error) {
       console.error("Error disconnecting:", error);
     } finally {
