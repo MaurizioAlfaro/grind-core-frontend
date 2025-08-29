@@ -37,6 +37,7 @@ import { BuffInfoModal } from "./components/common/BuffInfoModal";
 import { WalletLinkingModal } from "./components/common/WalletLinkingModal";
 import { Tutorial } from "./features/tutorial/Tutorial";
 import { ServerErrorModal } from "./components/common/ServerErrorModal";
+import CasinoView from "./components/casino/CasinoView";
 
 import { BossIcon } from "./features/navigation/icons/BossIcon";
 import { LabIcon } from "./features/navigation/icons/LabIcon";
@@ -47,6 +48,7 @@ import { CollectionIcon } from "./features/navigation/icons/CollectionIcon";
 import { ForgeIcon } from "./features/navigation/icons/ForgeIcon";
 import { StoreIcon } from "./features/navigation/icons/StoreIcon";
 import { SettingsIcon } from "./features/navigation/icons/SettingsIcon";
+import { CasinoIcon } from "./features/navigation/icons/CasinoIcon";
 
 import { ZONES } from "./constants/index";
 
@@ -76,6 +78,8 @@ const App: React.FC = () => {
     isInitialBoostModalOpen,
     isConnectWalletModalOpen,
     walletChoiceModal,
+    pendingMissionRewards,
+    showCasino,
     viewingBuffInfo,
     tutorialConfig,
     activeView,
@@ -508,6 +512,9 @@ const App: React.FC = () => {
           />
         )}
 
+        {/* Casino Modal */}
+        {showCasino && <CasinoView onClose={actions.closeCasino} />}
+
         <header className="p-4 pt-12 sticky top-0 bg-gray-900 z-20">
           <div className="relative bg-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-700 shadow-lg p-4 space-y-4">
             <PlayerStats player={gameState.player} />
@@ -515,6 +522,18 @@ const App: React.FC = () => {
               activeBoosts={gameState.player.activeBoosts}
               onViewBuff={actions.openBuffInfoModal}
             />
+
+            {/* Casino Button */}
+            <div className="flex justify-center">
+              <button
+                onClick={actions.openCasino}
+                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                <CasinoIcon />
+                <span>🎰 Casino</span>
+              </button>
+            </div>
+
             <ContextualNavButton
               activeView={activeView}
               onNavigate={actions.setActiveView}

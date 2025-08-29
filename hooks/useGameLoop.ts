@@ -103,6 +103,9 @@ export const useGameLoop = () => {
   const [pendingMissionRewards, setPendingMissionRewards] =
     useState<Rewards | null>(null);
 
+  // Casino state
+  const [showCasino, setShowCasino] = useState(false);
+
   // Wallet linking modal state
   const [walletChoiceModal, setWalletChoiceModal] = useState<{
     isOpen: boolean;
@@ -1686,6 +1689,10 @@ export const useGameLoop = () => {
       });
     },
 
+    // Casino actions
+    openCasino: () => setShowCasino(true),
+    closeCasino: () => setShowCasino(false),
+
     // Helper functions for wallet linking
     showWalletChoiceModal: (walletPlayerData: any, jwtToken: string) => {
       setWalletChoiceModal({
@@ -1839,6 +1846,7 @@ export const useGameLoop = () => {
       isConnectWalletModalOpen,
       walletChoiceModal,
       pendingMissionRewards,
+      showCasino,
       viewingBuffInfo,
       tutorialConfig,
       activeView,
@@ -1876,6 +1884,7 @@ export const useGameLoop = () => {
     isConnectWalletModalOpen,
     walletChoiceModal,
     pendingMissionRewards,
+    showCasino,
     viewingBuffInfo,
     tutorialConfig,
     activeView,
