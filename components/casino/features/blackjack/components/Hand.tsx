@@ -19,8 +19,24 @@ const Hand: React.FC<HandProps> = ({
   const isHoleCardHidden = isDealer && hideHoleCard;
   const prevHandLength = usePrevious(hand.length) ?? 0;
 
+  // Responsive dimensions
+  const isSmallScreen =
+    typeof window !== "undefined" && window.innerWidth < 640;
+  const handHeight = isSmallScreen ? "10rem" : "10rem";
+  const emptyCardWidth = isSmallScreen ? "6rem" : "6rem";
+  const emptyCardHeight = isSmallScreen ? "9rem" : "9rem";
+
   return (
-    <div className="h-40 flex items-center justify-center relative min-w-[200px]">
+    <div
+      style={{
+        height: handHeight,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+        minWidth: "200px",
+      }}
+    >
       {hand.map((card, index) => {
         const isNewCard = index >= prevHandLength;
         const animationClass = isNewCard
@@ -55,7 +71,15 @@ const Hand: React.FC<HandProps> = ({
         );
       })}
       {hand.length === 0 && (
-        <div className="w-24 h-36 rounded-lg bg-black/20 border-2 border-dashed border-white/30"></div>
+        <div
+          style={{
+            width: emptyCardWidth,
+            height: emptyCardHeight,
+            borderRadius: "0.5rem",
+            background: "rgba(0, 0, 0, 0.2)",
+            border: "2px dashed rgba(255, 255, 255, 0.3)",
+          }}
+        ></div>
       )}
     </div>
   );

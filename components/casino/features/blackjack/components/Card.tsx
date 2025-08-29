@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { Card as CardType, Suit } from '../types';
+import React from "react";
+import { Card as CardType, Suit } from "../types";
 
 interface CardProps {
   card: CardType;
@@ -8,26 +7,76 @@ interface CardProps {
   className?: string;
 }
 
-const Card: React.FC<CardProps> = ({ card, faceDown = false, className = '' }) => {
+const Card: React.FC<CardProps> = ({
+  card,
+  faceDown = false,
+  className = "",
+}) => {
   const isRed = card.suit === Suit.Hearts || card.suit === Suit.Diamonds;
-  const textColor = isRed ? 'text-red-600' : 'text-black';
+  const textColor = isRed ? "#d9534f" : "#000000";
+
+  // Responsive dimensions
+  const isSmallScreen =
+    typeof window !== "undefined" && window.innerWidth < 640;
+  const cardWidth = isSmallScreen ? "4rem" : "4.375rem";
+  const cardHeight = isSmallScreen ? "6rem" : "6.5625rem";
+
+  if (faceDown) {
+    return (
+      <div
+        style={{
+          width: cardWidth,
+          height: cardHeight,
+          background: "linear-gradient(45deg, #9333ea, #7c3aed)",
+          border: "2px solid #9333ea",
+          borderRadius: "8px",
+          display: "inline-block",
+          margin: "0 0.25rem",
+          boxShadow:
+            "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+          position: "relative",
+        }}
+      ></div>
+    );
+  }
 
   return (
-    <div className={`w-24 h-36 card-flipper-container ${className}`}>
-      <div className={`card-flipper ${faceDown ? '' : 'is-flipped'}`}>
-        <div className="card-face">
-          <div className="w-full h-full bg-blue-700 rounded-lg shadow-card border-4 border-white flex items-center justify-center">
-            <div className="w-20 h-32 rounded-md bg-blue-800 border-2 border-blue-500"></div>
-          </div>
-        </div>
-        <div className="card-face card-back">
-          <div className={`w-full h-full bg-card-white rounded-lg shadow-card p-2 flex flex-col justify-between relative ${textColor}`}>
-            <div className="text-2xl font-bold leading-none">{card.rank}</div>
-            <div className="text-xl leading-none">{card.suit}</div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl opacity-60">{card.suit}</div>
-            <div className="text-2xl font-bold leading-none self-end rotate-180">{card.rank}</div>
-          </div>
-        </div>
+    <div
+      style={{
+        width: cardWidth,
+        height: cardHeight,
+        background: "#f8f8f8",
+        border: "2px solid #374151",
+        borderRadius: "8px",
+        display: "inline-block",
+        margin: "0 0.25rem",
+        boxShadow:
+          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: "0.25rem",
+          left: "0.25rem",
+          fontSize: "0.875rem",
+          fontWeight: "700",
+          color: textColor,
+        }}
+      >
+        {card.rank}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "0.25rem",
+          right: "0.25rem",
+          fontSize: "1.25rem",
+          color: textColor,
+        }}
+      >
+        {card.suit}
       </div>
     </div>
   );
