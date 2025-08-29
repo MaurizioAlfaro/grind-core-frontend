@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc --noEmitOnError false",
-    "dev": "nodemon --exec \"ts-node --transpile-only --ignoreDeprecations 5.0\" server.ts",
+    "dev": "nodemon --exec \"ts-node --transpile-only\" server.ts",
     "postinstall": "npm run build"
   },
   "dependencies": {
@@ -24,11 +24,11 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.14.10",
-    "@types/jsonwebtoken": "^9.0.5",
-    "nodemon": "^3.1.4",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.11.30",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.4.3"
   },
   "engines": {
     "node": ">=18.0.0"
