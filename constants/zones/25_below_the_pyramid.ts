@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone25: Zone = {
     id: 'below_the_pyramid',
     name: 'Below the Pyramid',
-    image: '/assets/images/missions-backgrounds/Below the Pyramid.png',
+    image: '/images/missions-backgrounds/Below the Pyramid.png',
     lore: "Another portal in Atlantis leads to the great pyramids of Egypt. As I suspected, they are not tombs, but power plants. Deep below, a focusing chamber channels ley-line energy to the Order's true masters.",
     requiredPower: 15000,
     missionDurations: createDurations(3200, 1600),

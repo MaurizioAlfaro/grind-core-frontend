@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone23: Zone = {
     id: 'ancient_moon_temple',
     name: 'Ancient Moon Temple',
-    image: '/assets/images/missions-backgrounds/Ancient Moon Temple.png',
+    image: '/images/missions-backgrounds/Ancient Moon Temple.png',
     lore: "While sabotaging the refinery, I discovered something impossible: an ancient temple, buried beneath the lunar dust. It predates humanity. It seems the Order did not build on the Moon, they occupied it. What secrets does this place hold?",
     requiredPower: 7000,
     missionDurations: createDurations(2000, 1000),

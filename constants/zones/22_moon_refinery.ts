@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone22: Zone = {
     id: 'moon_refinery',
     name: 'Moon\'s Refinery',
-    image: '/assets/images/missions-backgrounds/Moon\'s Refinery.png',
+    image: '/images/missions-backgrounds/Moon\'s Refinery.png',
     lore: "Their power source for the Mars base is a refinery on the Moon, harvesting exotic energies. By destroying it, I can cripple their entire off-world presence. The vacuum of space is a minor inconvenience for my kind.",
     requiredPower: 5000,
     missionDurations: createDurations(1600, 800),

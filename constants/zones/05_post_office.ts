@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone05: Zone = {
     id: 'post_office',
     name: 'Post Office',
-    image: '/assets/images/missions-backgrounds/Post Office.png',
+    image: '/images/missions-backgrounds/Post Office.png',
     lore: "An archaic physical message delivery system. Yet, the Order uses it for sensitive documents, believing it to be beneath digital surveillance. I must swap a critical package before it reaches its destination.",
     requiredPower: 50,
     missionDurations: createDurations(30, 15),

@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone18: Zone = {
     id: 'white_house',
     name: 'The White House',
-    image: '/assets/images/missions-backgrounds/white house.png',
+    image: '/images/missions-backgrounds/white house.png',
     lore: "The archives revealed the ultimate target. The President is a clone. The entire executive branch is compromised. The time for subtlety is over. I'm going to the White House to expose the truth to the world.",
     requiredPower: 1500,
     missionDurations: createDurations(600, 300),

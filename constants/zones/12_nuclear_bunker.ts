@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone12: Zone = {
     id: 'nuclear_bunker',
     name: 'Nuclear Bunker',
-    image: '/assets/images/missions-backgrounds/Nuclear Bunker.png',
+    image: '/images/missions-backgrounds/Nuclear Bunker.png',
     lore: "Intel from the crash site leads me to a decommissioned nuclear bunker. It's not abandoned. It's a command center for one of the Order's regional directors. Time to go knock on a very, very thick door.",
     requiredPower: 320,
     missionDurations: createDurations(150, 75),

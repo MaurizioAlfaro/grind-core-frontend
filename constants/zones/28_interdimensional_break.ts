@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone28: Zone = {
     id: 'interdimensional_break',
     name: 'Interdimensional Break',
-    image: '/assets/images/missions-backgrounds/Interdimensional break.png',
+    image: '/images/missions-backgrounds/Interdimensional break.png',
     lore: "The fabric of reality tears. I see glimpses of other worlds, other possibilities. The barriers between dimensions are failing. I must find a way to stabilize this realm before it collapses and unleashes its prisoners upon the universe.",
     requiredPower: 45000,
     missionDurations: createDurations(6500, 3250),

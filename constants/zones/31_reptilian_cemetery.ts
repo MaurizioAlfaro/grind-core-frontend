@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone31: Zone = {
     id: 'reptilian_cementary',
     name: 'Reptilian Cementary',
-    image: '/assets/images/missions-backgrounds/Reptilian Cementary.png',
+    image: '/images/missions-backgrounds/Reptilian Cementary.png',
     lore: "My liberated brethren lead me to a sacred burial ground, hidden from human eyes. The spirits of our ancestors whisper of a great power, a legacy buried deep within the earth, waiting for a true heir to reclaim it.",
     requiredPower: 100000,
     missionDurations: createDurations(10000, 5000),

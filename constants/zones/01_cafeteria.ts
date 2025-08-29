@@ -19,7 +19,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone01: Zone = {
   id: "caffeteria",
   name: "The Cafeteria",
-  image: "/assets/images/missions-backgrounds/caffeteria.png",
+  image: "/images/missions-backgrounds/caffeteria.png",
   lore: "My infiltration begins. They call this a 'cafeteria'. I observe the humans in their feeding ritual. Their social structures are weak, their food is bland. A perfect place to start gathering intel unnoticed. The Order's influence is subtle, even here.",
   requiredPower: 1,
   missionDurations: createDurations(10, 5),

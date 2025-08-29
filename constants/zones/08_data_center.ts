@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone08: Zone = {
     id: 'data_center',
     name: 'Data Center',
-    image: '/assets/images/missions-backgrounds/Data Center.png',
+    image: '/images/missions-backgrounds/Data Center.png',
     lore: "The heart of their local propaganda network. The hum of the servers is a symphony of lies. I'm inside to plant a virus that will subtly alter their 'news' feeds with inconvenient truths. The cooling system is my only cover.",
     requiredPower: 120,
     missionDurations: createDurations(65, 30),

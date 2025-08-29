@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone10: Zone = {
     id: 'dark_alley',
     name: 'Dark Alley',
-    image: '/assets/images/missions-backgrounds/Dark Alley.png',
+    image: '/images/missions-backgrounds/Dark Alley.png',
     lore: "I escaped, but the Order's agents are hunting me. The city's dark alleys are my refuge. The shadows hide secrets and danger. My resistance contact is waiting for me here with new orders and a piece of upgraded gear.",
     requiredPower: 200,
     missionDurations: createDurations(100, 50),

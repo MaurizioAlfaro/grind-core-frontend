@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone04: Zone = {
     id: 'gym',
     name: 'The Gymnasium',
-    image: '/assets/images/missions-backgrounds/Gym.png',
+    image: '/images/missions-backgrounds/Gym.png',
     lore: "A facility for 'physical fitness'. They are surprisingly dedicated to strengthening their fragile bodies. This is a recruitment ground for the Order's enforcers. I will lift their heavy objects and listen to their plans.",
     requiredPower: 35,
     missionDurations: createDurations(25, 12),

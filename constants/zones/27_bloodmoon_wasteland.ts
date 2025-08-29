@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone27: Zone = {
     id: 'bloodmoon_wasteland',
     name: 'Bloodmoon Wasteland',
-    image: '/assets/images/missions-backgrounds/Blood Moon Wasteland.png',
+    image: '/images/missions-backgrounds/Blood Moon Wasteland.png',
     lore: "Defeating the traitor shattered his throne and transported me to a wasteland under a crimson moon. This is a prison dimension, where our greatest enemies were sealed away. The Order wasn't just controlling Earth, they were guarding this place.",
     requiredPower: 30000,
     missionDurations: createDurations(5000, 2500),

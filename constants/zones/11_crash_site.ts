@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone11: Zone = {
     id: 'crash_site',
     name: 'Crash Site',
-    image: '/assets/images/missions-backgrounds/Crash Site.png',
+    image: '/images/missions-backgrounds/Crash Site.png',
     lore: "The resistance has downed an Order transport ship. It's a race against time to salvage its cargo and black box before their cleanup crews arrive. The technology within could be a game-changer.",
     requiredPower: 250,
     missionDurations: createDurations(125, 60),

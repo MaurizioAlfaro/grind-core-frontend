@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone06: Zone = {
     id: 'office',
     name: 'Corporate Office',
-    image: '/assets/images/missions-backgrounds/office.png',
+    image: '/images/missions-backgrounds/office.png',
     lore: "I have infiltrated one of their corporate fronts. The 'TPS reports' are encoded with troop movements. My human disguise, 'Bob from accounting', is holding up. The fluorescent lights are slowly driving me mad, as designed.",
     requiredPower: 70,
     missionDurations: createDurations(40, 20),

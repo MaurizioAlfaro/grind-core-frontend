@@ -12,7 +12,7 @@ const createDurations = (baseXp: number, baseGold: number) => ({
 export const zone02: Zone = {
     id: 'supermarket',
     name: 'The Supermarket',
-    image: '/assets/images/missions-backgrounds/Supermarket.png',
+    image: '/images/missions-backgrounds/Supermarket.png',
     lore: "I trace their supply lines to this 'Supermarket'. Aisle 69 is a known dead drop for local Order agents. I must intercept their communications while pretending to analyze 'nutritional information'. Their obsession with processed grains is a strategic weakness.",
     requiredPower: 10,
     missionDurations: createDurations(15, 8),
