@@ -40,3 +40,4 @@ Make sure to set these environment variables in your hosting service:
 ## Note
 
 This is the backend-only version. The frontend runs separately and needs to be deployed to Vercel or another frontend hosting service.
+# grind-core-frontend
