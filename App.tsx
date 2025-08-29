@@ -542,16 +542,18 @@ const App: React.FC = () => {
               onViewBuff={actions.openBuffInfoModal}
             />
 
-            {/* Casino Button */}
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={actions.openCasino}
-                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <CasinoIcon />
-                <span>🎰 Casino</span>
-              </button>
-            </div>
+            {/* Casino Button - Only show when wallet is connected */}
+            {gameState.player.isWalletConnected && (
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={actions.openCasino}
+                  className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-bold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <CasinoIcon />
+                  <span>🎰 Casino</span>
+                </button>
+              </div>
+            )}
 
             <ContextualNavButton
               activeView={activeView}
