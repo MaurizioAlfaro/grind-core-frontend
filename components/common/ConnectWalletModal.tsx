@@ -62,12 +62,6 @@ export const ConnectWalletModal: React.FC<ConnectWalletModalProps> = ({
                   </span>{" "}
                   from all sources.
                 </li>
-                <li>
-                  <span className="font-bold text-blue-400">
-                    50% more Item Drop Chance
-                  </span>
-                  .
-                </li>
               </ul>
             </Benefit>
           </div>

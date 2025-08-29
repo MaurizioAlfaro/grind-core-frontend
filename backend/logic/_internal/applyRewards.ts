@@ -59,6 +59,9 @@ export const applyRewards = (
   );
 
   let newState = { ...playerState };
+
+  // 🎭 REPTILIANZ NFT BONUSES are already applied in backend preroll
+  // No need to apply bonus again here - rewards already include the bonus
   newState.xp += rewards.xp;
   newState.gold += rewards.gold;
   newState.dollars = (newState.dollars || 0) + (rewards.dollars || 0);

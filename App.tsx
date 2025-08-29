@@ -411,6 +411,7 @@ const App: React.FC = () => {
             title={modalContent.title}
             rewards={modalContent.rewards}
             onClose={actions.closeModal}
+            player={gameState.player}
           />
         )}
         {rewardsInfoModalZoneId && (

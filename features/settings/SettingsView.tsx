@@ -96,10 +96,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <GoldIcon className="w-5 h-5 text-yellow-400" />
                   <span>+100% Gold Bonus</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CollectionIcon className="w-5 h-5 text-blue-400" />
-                  <span>+50% Loot Chance Bonus</span>
-                </div>
               </div>
             </div>
           ) : (
