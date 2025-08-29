@@ -4,9 +4,14 @@ import CasinoApp from "./App";
 interface CasinoViewProps {
   onClose: () => void;
   playerLevel: number;
+  currentPlayerId?: string;
 }
 
-const CasinoView: React.FC<CasinoViewProps> = ({ onClose, playerLevel }) => {
+const CasinoView: React.FC<CasinoViewProps> = ({
+  onClose,
+  playerLevel,
+  currentPlayerId,
+}) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
       <div className="relative w-full h-full max-w-7xl max-h-[90vh] bg-felt-green rounded-lg overflow-hidden">
@@ -20,7 +25,10 @@ const CasinoView: React.FC<CasinoViewProps> = ({ onClose, playerLevel }) => {
 
         {/* Casino content */}
         <div className="w-full h-full">
-          <CasinoApp playerLevel={playerLevel} />
+          <CasinoApp
+            playerLevel={playerLevel}
+            currentPlayerId={currentPlayerId}
+          />
         </div>
       </div>
     </div>

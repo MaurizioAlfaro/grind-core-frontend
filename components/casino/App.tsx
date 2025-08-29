@@ -34,7 +34,10 @@ const GameTab: React.FC<{
   </button>
 );
 
-const App: React.FC<{ playerLevel: number }> = ({ playerLevel }) => {
+const App: React.FC<{ playerLevel: number; currentPlayerId?: string }> = ({
+  playerLevel,
+  currentPlayerId,
+}) => {
   const [activeGame, setActiveGame] = useState<
     "blackjack" | "baccarat" | "roulette" | "chat"
   >("blackjack");
@@ -73,7 +76,7 @@ const App: React.FC<{ playerLevel: number }> = ({ playerLevel }) => {
           {activeGame === "blackjack" && <BlackjackGame />}
           {activeGame === "baccarat" && <BaccaratGame />}
           {activeGame === "roulette" && <RouletteGame />}
-          {activeGame === "chat" && <Chat />}
+          {activeGame === "chat" && <Chat currentPlayerId={currentPlayerId} />}
         </div>
       </div>
     </div>

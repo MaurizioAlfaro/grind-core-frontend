@@ -41,10 +41,8 @@ export class ChatService {
       // Create message
       const message = await ChatMessage.create({
         userId,
-        username: player.username || `Player_${player._id}`,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${
-          player.username || player._id
-        }`,
+        username: `Player_${player._id}`,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${player._id}`,
         text: text.trim(),
         room,
         timestamp: new Date(),

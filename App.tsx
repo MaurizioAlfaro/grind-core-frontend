@@ -530,6 +530,7 @@ const App: React.FC = () => {
           <CasinoView
             onClose={actions.closeCasino}
             playerLevel={gameState.player.level}
+            currentPlayerId={gameState.player._id || gameState.player.guestId}
           />
         )}
 
