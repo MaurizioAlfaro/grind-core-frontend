@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { ActiveBoost } from "../../types";
 import { ITEMS } from "../../constants/index";
 import { clockService } from "../../services/clockService";
@@ -19,11 +19,26 @@ export const ActiveBuffs: React.FC<ActiveBuffsProps> = ({
   activeBoosts,
   onViewBuff,
 }) => {
+  const [currentTime, setCurrentTime] = useState(clockService.getCurrentTime());
+
+  // Update time every second to refresh buff durations
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Round down to the nearest second to ensure all buffs update simultaneously
+      const now = clockService.getCurrentTime();
+      const roundedTime = Math.floor(now / 1000) * 1000;
+      setCurrentTime(roundedTime);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   if (activeBoosts.length === 0) {
     return null;
   }
 
-  const now = clockService.getCurrentTime();
+  // Use the state variable instead of calling clockService directly
+  const now = currentTime;
 
   // Create array of 5 slots, filling with buffs and empty placeholders
   const buffSlots = Array.from({ length: 5 }, (_, index) => {
@@ -45,7 +60,11 @@ export const ActiveBuffs: React.FC<ActiveBuffsProps> = ({
 
     if (!displayInfo) return { isEmpty: true };
 
-    const timeLeftSeconds = Math.max(0, Math.ceil((buff.endTime - now) / 1000));
+    // Round down to the nearest second for consistent timing
+    const timeLeftSeconds = Math.max(
+      0,
+      Math.floor((buff.endTime - now) / 1000)
+    );
 
     return {
       isEmpty: false,
@@ -57,9 +76,9 @@ export const ActiveBuffs: React.FC<ActiveBuffsProps> = ({
 
   return (
     <div>
-      <h3 className="text-xs text-gray-400 uppercase font-bold mb-2 text-center">
+      {/* <h3 className="text-xs text-gray-400 uppercase font-bold mb-2 text-center">
         Active Buffs
-      </h3>
+      </h3> */}
       <div className="grid grid-cols-5 gap-1 w-full">
         {buffSlots.map((slot, index) => {
           if (slot.isEmpty) {
@@ -90,7 +109,7 @@ export const ActiveBuffs: React.FC<ActiveBuffsProps> = ({
           return (
             <button
               key={buff.sourceId + buff.endTime}
-              className="flex flex-col items-center gap-1 p-1 bg-gray-900/50 rounded-lg border border-cyan-500/30 hover:bg-cyan-900/50 hover:border-cyan-400 transition-colors min-w-0"
+              className="flex flex-row items-center gap-1 p-1 bg-gray-900/50 rounded-lg border border-cyan-500/30 hover:bg-cyan-900/50 hover:border-cyan-400 transition-colors min-w-0"
               title={displayInfo.name}
               onClick={() => onViewBuff(buff)}
             >
