@@ -51,7 +51,7 @@ export const useGameLogic = () => {
       let storedChips = localStorage.getItem("blackjack_chips");
       if (!storedChips) {
         // Set initial chips if none exist
-        const initialChips = 1000;
+        const initialChips = 100000;
         localStorage.setItem("blackjack_chips", initialChips.toString());
         storedChips = initialChips.toString();
       }

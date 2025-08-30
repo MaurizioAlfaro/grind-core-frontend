@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,6 +10,13 @@ import ComingSoonPage from "./reptilianz-landing/components/ComingSoonPage";
 import GrindCoreApp from "./GrindCoreApp";
 
 const App: React.FC = () => {
+  useEffect(() => {
+    // Clear casino-related localStorage items
+    localStorage.removeItem("casinoSuiteState");
+    localStorage.removeItem("baccarat_chips");
+    localStorage.removeItem("roulette_chips");
+    localStorage.removeItem("blackjack_chips");
+  }, []);
   return (
     <Router>
       <Routes>

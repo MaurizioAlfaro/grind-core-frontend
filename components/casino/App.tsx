@@ -38,12 +38,12 @@ const Disclaimer: React.FC = () => {
       <div
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           gap: "0.5rem",
         }}
       >
-        <span style={{ color: "#facc15", fontSize: iconFontSize }}>⚠️</span>
         <p
           style={{
             color: "#fef3c7",
@@ -52,12 +52,11 @@ const Disclaimer: React.FC = () => {
           }}
         >
           <span style={{ fontWeight: "700", color: "#fbbf24" }}>
-            Disclaimer:
+            ⚠️ Disclaimer:
           </span>{" "}
           Casino chips are not related to gold as of now. They will be in the
-          future.
+          future. Game state resets on every page refresh for testing purposes.
         </p>
-        <span style={{ color: "#facc15", fontSize: iconFontSize }}>⚠️</span>
       </div>
     </div>
   );
@@ -65,36 +64,47 @@ const Disclaimer: React.FC = () => {
 
 const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
   const [showSuccess, setShowSuccess] = useState(false);
-  const [currentChips, setCurrentChips] = useState(0);
 
-  // Get current chips for display
-  useEffect(() => {
-    const updateChips = () => {
-      const chips = parseInt(localStorage.getItem("blackjack_chips") || "0");
-      setCurrentChips(chips);
-    };
+  const restartGame = () => {
+    // Clear all casino-related localStorage items
+    const casinoKeys = [
+      // Blackjack
+      "blackjack_chips",
+      "blackjack_bets",
+      "blackjack_gameState",
+      "blackjack_settings",
+      // Baccarat
+      "baccarat_chips",
+      "baccarat_bets",
+      "baccarat_gameState",
+      "baccarat_settings",
+      // Roulette
+      "roulette_chips",
+      "roulette_bets",
+      "roulette_gameState",
+      "roulette_settings",
+      // General casino
+      "casino_chips",
+      "casino_bets",
+      "casino_gameState",
+      "casino_settings",
+      // Casino suit state
+      "casinoSuitState",
+    ];
 
-    updateChips();
-    window.addEventListener("chipsUpdated", updateChips);
-    return () => window.removeEventListener("chipsUpdated", updateChips);
-  }, []);
-
-  const addChips = () => {
-    // Get current chips from localStorage or default to 0
-    const storedChips = parseInt(
-      localStorage.getItem("blackjack_chips") || "0"
-    );
-    const newChips = storedChips + 1000;
-    localStorage.setItem("blackjack_chips", newChips.toString());
-
-    // Dispatch a custom event to notify the blackjack game
-    window.dispatchEvent(
-      new CustomEvent("chipsUpdated", { detail: { chips: newChips } })
-    );
+    casinoKeys.forEach((key) => {
+      localStorage.removeItem(key);
+    });
 
     // Show success message
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 2000);
+
+    // Nuclear option: Force complete page reload to reset EVERYTHING
+    // This is the only way to guarantee 100% clean slate
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   };
 
   if (!isVisible) return null;
@@ -121,35 +131,20 @@ const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
       style={{
         position: "absolute",
         bottom: "1rem",
-        right: "1rem",
+        left: "1rem",
         zIndex: 20,
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-end",
+        alignItems: "flex-start",
         gap: "0.5rem",
       }}
     >
-      {/* Chips Counter */}
-      <div
-        style={{
-          background: "rgba(0, 0, 0, 0.5)",
-          color: "white",
-          padding: "0.5rem 0.75rem",
-          borderRadius: "0.5rem",
-          fontSize: buttonFontSize,
-          fontWeight: "700",
-          border: "1px solid rgba(255, 255, 255, 0.2)",
-        }}
-      >
-        Chips: <span style={{ color: "#fbbf24" }}>${currentChips}</span>
-      </div>
-
-      {/* Add Chips Button */}
+      {/* Restart Game Button */}
       <button
-        onClick={addChips}
+        onClick={restartGame}
         style={{
           padding: buttonPadding,
-          background: "#16a34a",
+          background: "#dc2626",
           color: "white",
           fontWeight: "700",
           borderRadius: "0.5rem",
@@ -161,21 +156,21 @@ const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
           fontSize: buttonFontSize,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = "#15803d";
+          e.currentTarget.style.background = "#b91c1c";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = "#16a34a";
+          e.currentTarget.style.background = "#dc2626";
         }}
-        title={`Add 1000 chips for testing (Current: ${currentChips})`}
+        title="Restart all casino games and reset all state"
       >
-        🪙 +1000 Chips
+        🔄 Restart Casino
       </button>
 
       {/* Success message */}
       {showSuccess && (
         <div
           style={{
-            background: "#16a34a",
+            background: "#dc2626",
             color: "white",
             padding: "0.5rem 0.75rem",
             borderRadius: "0.5rem",
@@ -185,7 +180,7 @@ const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
             animation: "fadeIn 0.3s ease-out forwards",
           }}
         >
-          ✅ Added 1000 chips!
+          ✅ Casino reset! Page reloading for complete reset...
         </div>
       )}
     </div>
@@ -276,6 +271,16 @@ const App: React.FC<{ playerLevel: number; currentPlayerId?: string }> = ({
   const [activeGame, setActiveGame] = useState<
     "blackjack" | "baccarat" | "roulette" | "chat"
   >("blackjack");
+
+  // Clear localStorage on every refresh to prevent corrupted state
+  useEffect(() => {
+    // Clear casino-related localStorage items
+    localStorage.removeItem("casinoSuitState");
+    localStorage.removeItem("baccarat_chips");
+    localStorage.removeItem("roulette_chips");
+    localStorage.removeItem("casino_chips");
+    console.log("Casino localStorage cleared on refresh");
+  }, []);
 
   // Responsive dimensions
   const isSmallScreen =
