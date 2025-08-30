@@ -115,19 +115,36 @@ const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
     : isMediumScreen
     ? "0.875rem"
     : "1rem";
-  const buttonTop = isSmallScreen ? "0.75rem" : "1rem";
-  const buttonLeft = isSmallScreen ? "0.75rem" : "1rem";
-  const successTop = isSmallScreen ? "2.5rem" : "3rem";
 
   return (
     <div
       style={{
         position: "absolute",
-        top: buttonTop,
-        left: buttonLeft,
+        bottom: "1rem",
+        right: "1rem",
         zIndex: 20,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        gap: "0.5rem",
       }}
     >
+      {/* Chips Counter */}
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.5)",
+          color: "white",
+          padding: "0.5rem 0.75rem",
+          borderRadius: "0.5rem",
+          fontSize: buttonFontSize,
+          fontWeight: "700",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+        }}
+      >
+        Chips: <span style={{ color: "#fbbf24" }}>${currentChips}</span>
+      </div>
+
+      {/* Add Chips Button */}
       <button
         onClick={addChips}
         style={{
@@ -158,9 +175,6 @@ const AddChipsButton: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
       {showSuccess && (
         <div
           style={{
-            position: "absolute",
-            top: successTop,
-            left: 0,
             background: "#16a34a",
             color: "white",
             padding: "0.5rem 0.75rem",
