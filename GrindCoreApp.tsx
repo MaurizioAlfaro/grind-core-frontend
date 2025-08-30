@@ -544,6 +544,7 @@ const GrindCoreApp: React.FC = () => {
         <FooterNav
           activeView={activeView}
           onNavigate={actions.setActiveView}
+          onCasinoClick={actions.openCasino}
           missionActive={isMissionActive}
           isLabUnlocked={isLabUnlocked}
         />
