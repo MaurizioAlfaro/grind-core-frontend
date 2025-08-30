@@ -58,7 +58,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       </div>
 
       <div className="space-y-4">
-        <StatusCard title="Display Name">
+        <StatusCard title="Username">
           <DisplayNameEditor
             currentDisplayName={player.displayName}
             onUpdate={handleDisplayNameUpdate}
