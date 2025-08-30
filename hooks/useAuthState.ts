@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { walletAuthService } from "../services/walletAuthService";
+import { API_URL } from "../config/api";
 
 export type AuthState = "loading" | "authenticated" | "unauthenticated";
 
@@ -85,18 +86,15 @@ export const useAuthState = () => {
 
       // 3. Request nonce from backend
       console.log("🔄 Requesting nonce from backend...");
-      const nonceResponse = await fetch(
-        "https://grind-core-backend.onrender.com/api/auth/nonce",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            walletAddress: publicKey.toString(),
-          }),
-        }
-      );
+      const nonceResponse = await fetch(`${API_URL}/auth/nonce`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          walletAddress: publicKey.toString(),
+        }),
+      });
 
       if (!nonceResponse.ok) {
         throw new Error("Failed to get nonce from server");
@@ -117,20 +115,17 @@ export const useAuthState = () => {
 
       // 6. Authenticate with backend using signature
       console.log("🔄 Authenticating with backend...");
-      const authResponse = await fetch(
-        "https://grind-core-backend.onrender.com/api/auth/authenticate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            walletAddress: publicKey.toString(),
-            signature: Array.from(signature),
-            message: message,
-          }),
-        }
-      );
+      const authResponse = await fetch(`${API_URL}/auth/authenticate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          walletAddress: publicKey.toString(),
+          signature: Array.from(signature),
+          message: message,
+        }),
+      });
 
       if (!authResponse.ok) {
         const errorData = await authResponse.json();

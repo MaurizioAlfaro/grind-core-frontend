@@ -1,6 +1,7 @@
+import { API_URL } from "../../../config/api";
 import { ChatMessage, ChatState } from "../features/chat/types";
 
-const API_BASE_URL = "https://grind-core-backend.onrender.com/api/chat";
+const API_BASE_URL = `${API_URL}/chat`;
 
 // Helper function to get auth token
 const getAuthToken = (): string | null => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyledButton } from "./StyledButton";
+import { API_URL } from "../../config/api";
 
 interface WalletAuthModalProps {
   isOpen: boolean;
@@ -37,16 +38,13 @@ export const WalletAuthModal: React.FC<WalletAuthModalProps> = ({
       setError(null);
 
       // Step 1: Request nonce from backend
-      const nonceResponse = await fetch(
-        "https://grind-core-backend.onrender.com/api/auth/nonce",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ walletAddress }),
-        }
-      );
+      const nonceResponse = await fetch(`${API_URL}/auth/nonce`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ walletAddress }),
+      });
 
       if (!nonceResponse.ok) {
         throw new Error("Failed to get nonce from server");
@@ -71,20 +69,17 @@ export const WalletAuthModal: React.FC<WalletAuthModalProps> = ({
 
       // Step 3: Verify signature with backend
       setCurrentStep("verifying");
-      const authResponse = await fetch(
-        "https://grind-core-backend.onrender.com/api/auth/authenticate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            walletAddress,
-            signature: Array.from(signature),
-            nonce: nonceData.nonce,
-          }),
-        }
-      );
+      const authResponse = await fetch(`${API_URL}/auth/authenticate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          walletAddress,
+          signature: Array.from(signature),
+          nonce: nonceData.nonce,
+        }),
+      });
 
       if (!authResponse.ok) {
         throw new Error("Authentication failed");
