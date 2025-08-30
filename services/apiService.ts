@@ -38,6 +38,38 @@ const post = async (endpoint: string, body: any) => {
   }
 };
 
+const put = async (endpoint: string, body: any) => {
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("API Error:", data);
+      return {
+        success: false,
+        message:
+          data.message || `Request failed with status ${response.status}`,
+      };
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Network Error:", error);
+    return {
+      success: false,
+      message: error.message || "A network error occurred.",
+    };
+  }
+};
+
 const get = async (endpoint: string) => {
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
@@ -69,6 +101,13 @@ export const apiService = {
   unlockZone: (body: any) => post("/player/unlockZone", body),
   equipItem: (body: any) => post("/player/equip", body),
   unequipItem: (body: any) => post("/player/unequip", body),
+
+  // Display Name
+  getDisplayName: () => get("/player/displayName"),
+  updateDisplayName: (body: { displayName: string }) =>
+    put("/player/displayName", body),
+  checkDisplayNameAvailability: (displayName: string) =>
+    get(`/player/displayName/check/${encodeURIComponent(displayName)}`),
 
   // Missions
   startMission: (body: any) => post("/missions/start", body),

@@ -85,6 +85,7 @@ const baseStateAdditions = {
   isWalletConnected: false,
   ownsReptilianzNFT: false,
   hasSeenWalletConnectPrompt: false,
+  displayName: undefined,
 };
 
 const completedTutorialState = {

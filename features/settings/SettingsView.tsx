@@ -6,6 +6,7 @@ import { PhantomIcon } from "../navigation/icons/PhantomIcon";
 import { GoldIcon } from "../player/icons/GoldIcon";
 import { XpIcon } from "../player/icons/XpIcon";
 import { CollectionIcon } from "../navigation/icons/CollectionIcon";
+import { DisplayNameEditor } from "./DisplayNameEditor";
 
 interface SettingsViewProps {
   player: PlayerState;
@@ -14,6 +15,7 @@ interface SettingsViewProps {
   onToggleNFT: () => void; // Dev only
   onLogout: () => void;
   isDevMode: boolean;
+  onPlayerUpdate?: (newPlayerState: PlayerState) => void;
 }
 
 const StatusCard: React.FC<{ title: string; children: React.ReactNode }> = ({
@@ -33,9 +35,18 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onToggleNFT,
   onLogout,
   isDevMode,
+  onPlayerUpdate,
 }) => {
   const [recoveryString, setRecoveryString] = useState<string | null>(null);
   const [isGeneratingRecovery, setIsGeneratingRecovery] = useState(false);
+
+  const handleDisplayNameUpdate = (newPlayerState: PlayerState) => {
+    // Update the player state in the parent component
+    if (onPlayerUpdate) {
+      onPlayerUpdate(newPlayerState);
+    }
+    console.log("Player state updated:", newPlayerState);
+  };
 
   return (
     <div className="space-y-6">
@@ -47,6 +58,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       </div>
 
       <div className="space-y-4">
+        <StatusCard title="Display Name">
+          <DisplayNameEditor
+            currentDisplayName={player.displayName}
+            onUpdate={handleDisplayNameUpdate}
+          />
+        </StatusCard>
+
         <StatusCard title="Wallet Connection">
           {player.isWalletConnected ? (
             <div>

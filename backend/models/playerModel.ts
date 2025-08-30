@@ -97,6 +97,7 @@ const PlayerSchema = new mongoose.Schema(
     bossDefeatCounts: { type: Object, default: {} },
     dailySafeguardUses: { type: Object, default: {} },
     lastSafeguardUseTimestamp: { type: Number, default: 0 },
+    displayName: { type: String, unique: true, sparse: true },
   },
   {
     timestamps: true,

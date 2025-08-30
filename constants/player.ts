@@ -62,4 +62,5 @@ export const INITIAL_PLAYER_STATE: PlayerState = {
   bossDefeatCounts: {},
   dailySafeguardUses: {},
   lastSafeguardUseTimestamp: 0,
+  displayName: undefined,
 };

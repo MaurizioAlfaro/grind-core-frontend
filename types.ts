@@ -354,18 +354,16 @@ export interface PlayerState {
   tutorialCompleted?: boolean;
   // Wallet
   walletAddress?: string;
-  isWalletConnected?: boolean;
-  ownsReptilianzNFT?: boolean;
-  hasSeenWalletConnectPrompt?: boolean;
-  guestId?: string; // For guest accounts without wallet
-  user?: string; // For guest accounts without wallet
-  // Reptilianz NFTs
+  guestId?: string;
+  isWalletConnected: boolean;
+  ownsReptilianzNFT: boolean;
+  hasSeenWalletConnectPrompt: boolean;
   reptilianzNFTs?: ReptilianzNFT[];
-
-  // Global Attributes / Enchantments
-  bossDefeatCounts?: { [bossId: string]: number };
-  dailySafeguardUses?: { [date: string]: number };
-  lastSafeguardUseTimestamp?: number;
+  bossDefeatCounts: { [bossId: string]: number };
+  dailySafeguardUses: { [zoneId: string]: number };
+  lastSafeguardUseTimestamp: number;
+  // Display name for chat
+  displayName?: string;
 }
 
 export type GameState = {
