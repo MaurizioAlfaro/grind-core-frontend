@@ -72,7 +72,7 @@ const Chat: React.FC<ChatProps> = ({ currentPlayerId }) => {
           ref={messagesContainerRef}
           className="h-full overflow-y-auto p-4 space-y-4 scroll-smooth"
         >
-          {messages.map((msg) => (
+          {[...messages].reverse().map((msg) => (
             <Message
               key={msg.id}
               message={msg}
