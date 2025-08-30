@@ -81,14 +81,6 @@ class WalletAuthService {
 
     const authData = await response.json();
 
-    console.log("🔍 [Recovery] Backend response:", authData);
-    console.log("🔍 [Recovery] Player data:", authData.player);
-    console.log("🔍 [Recovery] Player type:", typeof authData.player);
-    console.log(
-      "🔍 [Recovery] Player keys:",
-      Object.keys(authData.player || {})
-    );
-
     // Store authentication data
     this.token = authData.token;
     this.walletAddress = authData.player.walletAddress || null;
@@ -108,15 +100,6 @@ class WalletAuthService {
   // Check if user is authenticated
   isAuthenticated(): boolean {
     const guestId = localStorage.getItem("guestId");
-    console.log(
-      `[Auth] isAuthenticated check: this.token = ${
-        this.token
-      }, this.walletAddress = ${
-        this.walletAddress
-      }, guestId = ${guestId}, localStorage token = ${localStorage.getItem(
-        "authToken"
-      )}`
-    );
     return !!this.token && (!!this.walletAddress || !!guestId);
   }
 

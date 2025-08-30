@@ -332,20 +332,10 @@ export const useGameLoop = () => {
 
   const handleApiResponse = useCallback(
     (result: any) => {
-      console.log("🔍 [Frontend] handleApiResponse called with:", result);
-
       if (result.success) {
         if (result.newPlayerState) {
-          console.log(
-            "🔍 [Frontend] Updating player state with:",
-            result.newPlayerState
-          );
           setGameState((prevState) => {
             if (!prevState) return prevState;
-            console.log(
-              "🔍 [Frontend] handleApiResponse: prevState.player before update:",
-              prevState.player
-            );
 
             // Update both player state and activeMission if it exists in the new player state and is valid
             const newActiveMission = isValidActiveMission(
@@ -358,11 +348,6 @@ export const useGameLoop = () => {
               player: result.newPlayerState,
               activeMission: newActiveMission,
             };
-
-            console.log(
-              "🔍 [Frontend] handleApiResponse: newState.player after update:",
-              newState.player
-            );
 
             // Update stored player data in localStorage
             localStorage.setItem(
@@ -1070,37 +1055,15 @@ export const useGameLoop = () => {
       if (!gameState || !gameState.activeMission) return;
       const { tutorialStep, tutorialCompleted } = gameState.player;
 
-      console.log(
-        "🔍 [Frontend] claimMission called with activeMission:",
-        gameState.activeMission
-      );
-      console.log(
-        "🔍 [Frontend] Current player state before API call:",
-        gameState.player
-      );
-
       const result = await apiService.claimMission({
         activeMission: gameState.activeMission,
       });
 
-      console.log("🔍 [Frontend] API response received:", result);
-
       if (handleApiResponse(result)) {
-        console.log(
-          "🔍 [Frontend] handleApiResponse succeeded, updating mission state"
-        );
         setTimeLeft(0);
         // Update only the activeMission part, preserving the player state update from handleApiResponse
         setGameState((prevState) => {
           if (!prevState) return prevState;
-          console.log(
-            "🔍 [Frontend] Updating game state, prevState.player:",
-            prevState.player
-          );
-          console.log(
-            "🔍 [Frontend] Using result.newPlayerState:",
-            result.newPlayerState
-          );
 
           // Ensure the new player state has activeMission cleared
           const updatedPlayerState = {
@@ -1120,7 +1083,6 @@ export const useGameLoop = () => {
             JSON.stringify(updatedPlayerState)
           );
 
-          console.log("🔍 [Frontend] Final newState after update:", newState);
           return newState;
         });
         if (!tutorialCompleted) {
@@ -1128,7 +1090,6 @@ export const useGameLoop = () => {
           if (tutorialStep === 38) safeAdvanceTutorial();
         }
       } else {
-        console.log("🔍 [Frontend] handleApiResponse failed");
       }
     }, [gameState, handleApiResponse, safeAdvanceTutorial]),
     // Other actions
@@ -1614,7 +1575,6 @@ export const useGameLoop = () => {
         console.log("✅ Wallet connected:", publicKey.toString());
 
         // 3. Request nonce from backend
-        console.log("🔄 Requesting nonce from backend...");
         const nonceResponse = await fetch(`${API_URL}/auth/nonce`, {
           method: "POST",
           headers: {
@@ -1630,19 +1590,12 @@ export const useGameLoop = () => {
         }
 
         const { message } = await nonceResponse.json();
-        console.log("📝 Message to sign:", message);
 
         // 4. Sign the message with nonce (shows native wallet dialog)
         const messageBytes = new TextEncoder().encode(message);
         const { signature } = await provider.signMessage(messageBytes);
 
-        // 5. Log success
-        console.log("✅ Message signed successfully");
-        console.log("🔐 Signature:", Array.from(signature));
-        console.log("📍 Wallet Address:", publicKey.toString());
-
-        // 6. Authenticate with backend using signature
-        console.log("🔄 Authenticating with backend...");
+        // 5. Authenticate with backend using signature
         const authResponse = await fetch(`${API_URL}/auth/authenticate`, {
           method: "POST",
           headers: {
@@ -1661,7 +1614,6 @@ export const useGameLoop = () => {
         }
 
         const authData = await authResponse.json();
-        console.log("✅ Authentication successful:", authData);
 
         // 7. Check if this is a new wallet or existing wallet
         if (
@@ -1677,8 +1629,6 @@ export const useGameLoop = () => {
 
         setIsConnectWalletModalOpen(false);
       } catch (error: any) {
-        console.error("Wallet connection failed:", error);
-
         // Clear any existing wallet choice modal state
         setWalletChoiceModal({
           isOpen: false,

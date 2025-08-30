@@ -17,11 +17,6 @@ export const useAuthState = () => {
     const isAuthenticated = walletAuthService.isAuthenticated();
     const storedPlayer = walletAuthService.getStoredPlayerData();
 
-    console.log(
-      `🔐 [Auth] isAuthenticated: ${isAuthenticated}, storedPlayer: ${!!storedPlayer}, showLogin: ${!(
-        isAuthenticated && storedPlayer
-      )}`
-    );
     if (isAuthenticated && storedPlayer) {
       setAuthState("authenticated");
       setShowLoginScreen(false);
@@ -82,10 +77,8 @@ export const useAuthState = () => {
 
       // 2. Connect wallet (shows native wallet dialog)
       const { publicKey } = await provider.connect();
-      console.log("✅ Wallet connected:", publicKey.toString());
 
       // 3. Request nonce from backend
-      console.log("🔄 Requesting nonce from backend...");
       const nonceResponse = await fetch(`${API_URL}/auth/nonce`, {
         method: "POST",
         headers: {
@@ -101,20 +94,12 @@ export const useAuthState = () => {
       }
 
       const { nonce, message } = await nonceResponse.json();
-      console.log("✅ Nonce received:", nonce);
-      console.log("📝 Message to sign:", message);
 
       // 4. Sign the message with nonce (shows native wallet dialog)
       const messageBytes = new TextEncoder().encode(message);
       const { signature } = await provider.signMessage(messageBytes);
 
-      // 5. Log success
-      console.log("✅ Message signed successfully");
-      console.log("🔐 Signature:", Array.from(signature));
-      console.log("📍 Wallet Address:", publicKey.toString());
-
-      // 6. Authenticate with backend using signature
-      console.log("🔄 Authenticating with backend...");
+      // 5. Authenticate with backend using signature
       const authResponse = await fetch(`${API_URL}/auth/authenticate`, {
         method: "POST",
         headers: {
@@ -133,7 +118,6 @@ export const useAuthState = () => {
       }
 
       const authData = await authResponse.json();
-      console.log("✅ Authentication successful:", authData);
 
       // 7. Set authentication state
       setWalletAddress(publicKey.toString());
@@ -162,7 +146,6 @@ export const useAuthState = () => {
         window.dispatchEvent(new CustomEvent("showWalletModal", {}));
       }, 3000);
     } catch (error: any) {
-      console.error("Wallet authentication failed:", error);
       if (error.code === 4001) {
         alert("Wallet connection was rejected by user.");
       } else {
